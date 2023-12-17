@@ -8,7 +8,8 @@ import os
 import random
 import string
 from functools import lru_cache, partial
-from typing import Callable, Optional, List, Union
+from typing import Callable, List, Optional, Union
+import warnings
 
 import ftfy
 import numpy as np
@@ -402,9 +403,15 @@ class HFTokenizer:
             context_length: Optional[int] = DEFAULT_CONTEXT_LENGTH,
             clean: str = 'whitespace',
             strip_sep_token: bool = False,
+            language: Optional[str] = None,
     ):
         from transformers import AutoTokenizer
         self.tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
+        set_lang_fn = getattr(self.tokenizer, 'set_src_lang_special_tokens', None)
+        if callable(set_lang_fn):
+            self.set_lang_fn = set_lang_fn
+        if language is not None:
+            self.set_language(language)
         self.context_length = context_length
         self.clean_fn = get_clean_fn(clean)
         self.strip_sep_token = strip_sep_token
@@ -422,7 +429,7 @@ class HFTokenizer:
         assert context_length, 'Please set a valid context length in class init or call.'
 
         texts = [self.clean_fn(text) for text in texts]
-        input_ids = self.tokenizer(
+        input_ids = self.tokenizer.batch_encode_plus(
             texts,
             return_tensors='pt',
             max_length=context_length,
@@ -438,6 +445,12 @@ class HFTokenizer:
             )
 
         return input_ids
+    
+    def set_language(self, src_lang):
+        if hasattr(self, 'set_lang_fn'):
+            self.set_lang_fn(src_lang)
+        else:
+            warnings.warn('Cannot set language for the tokenizer.')
 
 
 class SigLipTokenizer:
@@ -459,8 +472,9 @@ class SigLipTokenizer:
 
         if tokenizer_name in self.VOCAB_FILES:
             # FIXME temporary hack?
-            import fsspec
             import tempfile
+
+            import fsspec
             vocab_file = self.VOCAB_FILES[tokenizer_name]
             with tempfile.NamedTemporaryFile('wb') as dst:
                 with fsspec.open(vocab_file, 'rb') as src:
