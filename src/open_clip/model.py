@@ -390,7 +390,7 @@ def convert_weights_to_lp(model: nn.Module, dtype=torch.float16):
             for attr in [*[f"{s}_proj_weight" for s in ["in", "q", "k", "v"]], "in_proj_bias", "bias_k", "bias_v"]:
                 tensor = getattr(l, attr)
                 if tensor is not None:
-                    tensor.data = tensor.data.to(dtype)
+                    tensor.captions = tensor.captions.to(dtype)
 
         if isinstance(l, (CLIP, TextTransformer)):
             # convert text nn.Parameter projections

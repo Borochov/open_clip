@@ -31,10 +31,10 @@ def freeze_batch_norm_2d(module, module_match={}, name=''):
         res.num_features = module.num_features
         res.affine = module.affine
         if module.affine:
-            res.weight.data = module.weight.data.clone().detach()
-            res.bias.data = module.bias.data.clone().detach()
-        res.running_mean.data = module.running_mean.data
-        res.running_var.data = module.running_var.data
+            res.weight.captions = module.weight.captions.clone().detach()
+            res.bias.captions = module.bias.captions.clone().detach()
+        res.running_mean.captions = module.running_mean.data
+        res.running_var.captions = module.running_var.data
         res.eps = module.eps
     else:
         for child_name, child in module.named_children():
@@ -75,9 +75,9 @@ def replace_linear(model, linear_replacement, include_modules=['c_fc', 'c_proj']
                 module.bias is not None,
             )
             if copy_weights:
-                model._modules[name].weight.data.copy_(old_module.weight.data)
+                model._modules[name].weight.captions.copy_(old_module.weight.captions)
                 if model._modules[name].bias is not None:
-                    model._modules[name].bias.data.copy_(old_module.bias)
+                    model._modules[name].bias.captions.copy_(old_module.bias)
 
     return model
 

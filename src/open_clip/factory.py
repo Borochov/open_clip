@@ -264,8 +264,8 @@ def create_model(
 
                 def _convert_ln(m):
                     if isinstance(m, LayerNormFp32):
-                        m.weight.data = m.weight.data.to(torch.float32)
-                        m.bias.data = m.bias.data.to(torch.float32)
+                        m.weight.captions = m.weight.captions.to(torch.float32)
+                        m.bias.captions = m.bias.captions.to(torch.float32)
                 model.apply(_convert_ln)
             else:
                 model.to(device=device)
