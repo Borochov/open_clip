@@ -5,13 +5,19 @@ import pandas as pd
 import torch
 import open_clip
 from open_clip import tokenizer
+import openai
 from PIL import Image
 from my_utils import *
 import matplotlib
 
+import base64
+import requests
+
 matplotlib.use('Qt5Agg')  # Backend image engine that works in pycharm
 import matplotlib.pyplot as plt
 import time
+
+openai.api_key = os.getenv('OPENAI_API_KEY')
 
 dataSetPath = '../../Dataset/'
 captions_path = dataSetPath + 'annotations/captions_val2014.json'
@@ -55,7 +61,7 @@ def sanity():
     # Timer
     start_time = time.time()
     with torch.no_grad():
-        image_features = model.encode_image(image_input).float()
+        image_features = model.encodeImageBase64(image_input).float()
         text_features = model.encode_text(text_tokens).float()
 
     # Timer
@@ -77,34 +83,30 @@ def sanity():
 ## Semantics
 def semantics():
 
-    print('\n** Running Semantics **\n\n')
+    print('\n** Running Semantics **\n')
 
     # Load captions
     captions = loadCaptions(captions_path)
 
     # Load images
-    imagePath = dataSetPath + 'Semantics3/'
+    imagePath = dataSetPath + 'Semantics/'
     my_images = findCaptionForImage(imagePath, captions)
 
     # Plot images and matching captions
     # plotImages(my_images, imagePath)
 
     numImages = len(my_images['names'])
-    # numImages = 10
 
     # Load multiple choice file
-    multChoiceFileName = 'semantics multiple choice 3.txt'
+    multChoiceFileName = 'semantics multiple choice.txt'
     multChoices = loadTextFile(os.path.join(inputs_path, multChoiceFileName))
 
     results = dict()
     for i in range(numImages):
 
-        # Create 3 negative sentences
-        # text = "This is " + my_images['captions'][i]
-        # newText = negateCaptions(my_images['captions'][i])
-
         # Find multiple choices for this image
-        caption = my_images['captions'][i]
+        key = list(my_images['captions'].keys())[i]
+        caption = my_images['captions'][key][0]
         choices = []
         try:
             multIdx = multChoices.index(caption)
@@ -114,28 +116,55 @@ def semantics():
             print('Could not find multiple choices for: ' + caption)
             continue
 
-        text_tokens = tokenizer.tokenize(["This is " + desc for desc in choices])
-        image = Image.open(os.path.join(imagePath, my_images['names'][i])).convert("RGB")
-        image_input = torch.tensor(np.stack([preprocess(image)]))
-
-        with torch.no_grad():
-            image_features = model.encode_image(image_input).float()
-            text_features = model.encode_text(text_tokens).float()
-
-        ## Calculate cosine similarity
-        image_features /= image_features.norm(dim=-1, keepdim=True)
-        text_features /= text_features.norm(dim=-1, keepdim=True)
-        similarity = text_features.cpu().numpy() @ image_features.cpu().numpy().T
-
-        ## Display cosine similarity
-        # plotSimilarity(similarity, [image], choices, 4)
-
-        tempDict = dict()
-        tempDict.update({'choices': choices})
-        tempDict.update({'similarity': similarity.squeeze().tolist()})
+        tempDict = cosineSimilarity(model, preprocess, choices, imagePath, my_images['names'][i])
         results.update({my_images['names'][i]: tempDict})
 
     return results
+
+
+def uploadLocalImage():
+    # Path to your image
+    imagePath = "C:/Work/Python/Thesis/Dataset/Semantics/COCO_val2014_000000005577.jpg"
+
+    # Getting the base64 string
+    base64Image = encodeImageBase64(imagePath)
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {openai.api_key}"
+    }
+
+    payload = {
+        "model": "gpt-4-vision-preview",
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": "What’s in this image?"
+                    },
+                    {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": f"data:image/jpeg;base64,{base64Image}"
+                        }
+                    }
+                ]
+            }
+        ],
+        "max_tokens": 60
+    }
+
+    response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
+    print(response.json())
+
+
+def inContextLearning():
+    print('\n** Running In-Context Learning **\n')
+
+
+
 
 
 def main():
@@ -149,23 +178,112 @@ def main():
 
     # sanity()
     results = semantics()
+    saveResultsToExcel(results, results_path, 'Semantics')
 
-    for k in list(results.keys()):
-        # Convert to a DataFrame
-        x = np.array(results[k]['choices'])
-        y = np.array(results[k]['similarity'])
-        df = pd.DataFrame({'choices': x, 'similarity': y}, index=range(len(x)))
-
-        # df = pd.DataFrame(list(results[k].items()), columns=['Key', 'Value']).transpose()
-        # Save to Excel
-        # df.to_excel(os.path.join(results_path + 'Semantics.xlsx'), index=False)
-        # df.to_excel(os.path.join(results_path, 'Semantics.xlsx'), sheet_name=k, index=False, header=False)
-
-        with pd.ExcelWriter(os.path.join(results_path, 'Semantics.xlsx'), engine='openpyxl', mode='a') as writer:
-            df.to_excel(writer, sheet_name=k, index=False)
 
 
 
 
 if __name__ == '__main__':
-    main()
+    # main()
+
+    # Load captions
+    captions = loadCaptions(captions_path)
+
+    # Load images and find all captions per image
+    imagePath = dataSetPath + 'Semantics/'
+    my_images = findCaptionForImage(imagePath, captions)
+
+    # Plot images and matching captions
+    # plotImages(my_images, imagePath)
+
+
+    # Start in-context learning
+    # Describe mission
+    numImages = 5
+    myPrompt = """This is a mission of creating captions for given captions.
+                I will start by giving you 5 examples. For each examples I will provide a number of similar captions that are correct.
+                I want you to provide me with 5 similar yet wrong alternative captions."""
+
+    printModelIo('Mission description: ' + myPrompt, True)
+
+    # Generate a response from the model
+    response = openai.Completion.create(
+        # engine="text-davinci-003",  # Replace with the appropriate model/engine for GPT-4 or the version you are using
+        model="gpt-3.5-turbo-instruct",
+        # model="gpt-4-vision-preview",
+        prompt=myPrompt,
+        max_tokens=80,  # Adjust based on how long you expect the response to be
+    )
+
+    # Extract the text from the response
+    printModelIo(response.choices[0].text.strip(), False)
+
+
+    # Provide examples
+    for i in range(numImages):
+        imageId = my_images['imageIds'][i]
+        trueCaptions = ""
+        for j in range(len(my_images['captions'][imageId])):
+            trueCaptions += my_images['captions'][imageId][j] + "\n"
+
+        Preface = "This is Example #" + str(i+1) + ". Following are 5 true sentences:"
+        myPrompt = Preface + "\n" + trueCaptions + "Please verify That you understood this example."
+        printModelIo(myPrompt, True)
+
+        # Generate a response from the model
+        response = openai.Completion.create(
+            # engine="text-davinci-003",  # Replace with the appropriate model/engine for GPT-4 or the version you are using
+            model="gpt-3.5-turbo-instruct",
+            # model="gpt-4-vision-preview",
+            prompt=myPrompt,
+            max_tokens=80,  # Adjust based on how long you expect the response to be
+        )
+        # Extract the text from the response
+        printModelIo(response.choices[0].text.strip(), False)
+
+
+    # Create alternative captions
+    modelCaptions = {}
+    for i in range(numImages+1, len(my_images['imageIds'])):
+        imageId = my_images['imageIds'][i]
+        trueCaptions = ""
+        for j in range(len(my_images['captions'][imageId])):
+            trueCaptions += my_images['captions'][imageId][j] + "\n"
+
+        Preface = "This is Example #" + str(i+1) + ". Following are 5 true sentences:"
+        task = ("Please create 5 similar yet wrong alternative captions. Try to switch attributes among different objects."
+                "Please put each caption in an new line, without numbering the response.")
+        myPrompt = Preface + "\n" + trueCaptions + task
+        printModelIo(myPrompt, True)
+
+        # Generate a response from the model
+        response = openai.Completion.create(
+            # engine="text-davinci-003",  # Replace with the appropriate model/engine for GPT-4 or the version you are using
+            model="gpt-3.5-turbo-instruct",
+            # model="gpt-4-vision-preview",
+            prompt=myPrompt,
+            max_tokens=100,  # Adjust based on how long you expect the response to be
+        )
+        # Extract the text from the response
+        printModelIo(response.choices[0].text.strip(), False)
+
+        # Keep results
+        modelCaptions.update({imageId: response.choices[0].text.strip().split('\n')})
+
+
+    # Create multiple choices text
+    results = dict()
+    for i in range(len(my_images['imageIds'])):
+        imageId = my_images['imageIds'][i]
+        if imageId not in list(modelCaptions.keys()):
+            continue
+
+        imageName = my_images['names'][i]
+        choices = modelCaptions[imageId]
+        choices.append(my_images['captions'][imageId][0])  # Correct sentence is last
+
+        tempDict = cosineSimilarity(model, preprocess, choices, imagePath, imageName)
+        results.update({imageName: tempDict})
+
+    saveResultsToExcel(results, results_path, 'Semantics')

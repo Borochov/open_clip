@@ -43,7 +43,7 @@ def test_inference_simple(
     text = tokenizer(["a diagram", "a dog", "a cat"])
 
     with torch.no_grad():
-        image_features = model.encode_image(image)
+        image_features = model.encodeImageBase64(image)
         text_features = model.encode_text(text)
 
         text_probs = (100.0 * image_features @ text_features.T).softmax(dim=-1)

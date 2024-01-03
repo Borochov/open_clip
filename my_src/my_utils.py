@@ -1,7 +1,11 @@
 import os
 import json
 import math
-import openai
+import numpy as np
+import pandas as pd
+import torch
+from open_clip import tokenizer
+# import openai
 from PIL import Image
 import matplotlib
 matplotlib.use('Qt5Agg')  # Backend image engine that works in pycharm
@@ -28,7 +32,7 @@ def findCaptionForImage(imagePath, captions):
 
     my_images = {
         'names': [],
-        'captions': [],
+        'captions': {},
         'imageIds': []
     }
 
@@ -53,10 +57,11 @@ def findCaptionForImage(imagePath, captions):
             for ann in captions['annotations']:
                 if ann['image_id'] == image_id:
                     print('Matching Caption:', ann['caption'])
-                    my_images['captions'].append(ann['caption'])
-                    break
-            else:
-                print('Caption not found')
+                    if image_id in my_images['captions'].keys():
+                        my_images['captions'][image_id].append(ann['caption'])
+                    else:
+                        my_images['captions'].update({image_id: [ann['caption']]})
+
         else:
             # Handle case where the image was not found
             print('Image was not found')
@@ -103,7 +108,7 @@ def plotSimilarity(similarity, original_images, texts, numImages):
 
 
 def negateCaptions(myText):
-    openai.api_key = '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'
+
     prompts = ['negate: ', 'negate one element: ', 'provide an opposite example for the following sentence: ']
 
     print('negateCaptions for: ' + myText)
@@ -131,3 +136,56 @@ def loadTextFile(filePath):
         contents = file.read().split('\n')
 
     return contents
+
+
+def saveResultsToExcel(results, resultsPath, fileName):
+    filePath = os.path.join(resultsPath, fileName + '.xlsx')
+    for k in list(results.keys()):
+        # Convert to a DataFrame
+        x = np.array(results[k]['choices'])
+        y = np.array(results[k]['similarity'])
+        df = pd.DataFrame({'choices': x, 'similarity': y}, index=range(len(x)))
+
+        with pd.ExcelWriter(filePath, engine='openpyxl', mode='a') as writer:
+            df.to_excel(writer, sheet_name=k, index=False)
+
+    print('Saved results to: ' + filePath)
+
+
+# Function to encode the image
+def encodeImageBase64(image_path):
+    with open(image_path, "rb") as image_file:
+        return base64.b64encode(image_file.read()).decode('utf-8')
+
+
+def printModelIo(text, isInput):
+    action = "request" if isInput else "response"
+    print("*** Model " + action + ": ***")
+    print(text + "\n")
+
+
+def cosineSimilarity(model, preprocess, captions, imagePath, imageName):
+
+    text_tokens = tokenizer.tokenize(["This is " + desc for desc in captions])
+    image = Image.open(os.path.join(imagePath, imageName)).convert("RGB")
+    image_input = torch.tensor(np.stack([preprocess(image)]))
+
+    with torch.no_grad():
+        # image_features = model.encodeImageBase64(image_input).float()
+        # image_features = base64.b64encode(image_input)
+        image_features = model.encode_image(image_input).float()
+        text_features = model.encode_text(text_tokens).float()
+
+    ## Calculate cosine similarity
+    image_features /= image_features.norm(dim=-1, keepdim=True)
+    text_features /= text_features.norm(dim=-1, keepdim=True)
+    similarity = text_features.cpu().numpy() @ image_features.cpu().numpy().T
+
+    ## Display cosine similarity
+    # plotSimilarity(similarity, [image], choices, 4)
+
+    simDict = dict()
+    simDict.update({'choices': captions})
+    simDict.update({'similarity': similarity.squeeze().tolist()})
+
+    return simDict

@@ -31,7 +31,7 @@ def inference_image(model, preprocess_val, batches):
     with torch.no_grad():
         for x in batches:
             x = torch.stack([preprocess_val(img) for img in x])
-            y.append(model.encode_image(x))
+            y.append(model.encodeImageBase64(x))
         return torch.stack(y)
     
 def forward_model(model, model_name, preprocess_val, image_batch, text_batch):

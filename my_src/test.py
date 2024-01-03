@@ -69,7 +69,7 @@ plt.show()
 image_input = torch.tensor(np.stack(images))
 text_tokens = tokenizer.tokenize(["This is " + desc for desc in texts])
 with torch.no_grad():
-    image_features = model.encode_image(image_input).float()
+    image_features = model.encodeImageBase64(image_input).float()
     text_features = model.encode_text(text_tokens).float()
 
 ## Calculate cosine similarity

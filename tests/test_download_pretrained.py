@@ -101,7 +101,7 @@ class DownloadPretrainedTests(unittest.TestCase):
         text = tokenizer(["a diagram", "a dog", "a cat"])
 
         with torch.no_grad():
-            image_features = model.encode_image(image)
+            image_features = model.encodeImageBase64(image)
             text_features = model.encode_text(text)
             image_features /= image_features.norm(dim=-1, keepdim=True)
             text_features /= text_features.norm(dim=-1, keepdim=True)
