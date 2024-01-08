@@ -1,4 +1,4 @@
-we are creating an image understanding test. Given a few true image descriptions we to generate wrong descriptions for a multiple-choice test. The wrong captions need to not match the original image but to be close enough to be challenging and test the reading comprehension.
+we are creating an image understanding test. Given a few true image descriptions we want to generate wrong descriptions for a multiple-choice test. The wrong captions need to not match the original image but to be close enough to be challenging and test the reading comprehension.
 ChatGPT
 To create challenging but incorrect image descriptions for your image understanding test, the key is to maintain similarity in certain aspects while introducing subtle differences. This can test the reader's attention to detail and comprehension. Let's take an example:
 
@@ -16,7 +16,7 @@ Each of these descriptions maintains the core elements (fluffy white animal, pla
 User
 Example: Correct caption
 A white parrot standing next to a jungle covered hillside.
- Up close shot of a some type of beautifully white tropical bird
+Closeup shot of a some type of beautifully white tropical bird
 A white bird is standing in front of plants.
 a white bird with a black beak and some trees and bushes
 A pure white parrot with red eyes and a black beak.

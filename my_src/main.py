@@ -182,8 +182,6 @@ def main():
 
 
 
-
-
 if __name__ == '__main__':
     # main()
 
@@ -201,9 +199,10 @@ if __name__ == '__main__':
     # Start in-context learning
     # Describe mission
     numImages = 5
-    myPrompt = """This is a mission of creating captions for given captions.
-                I will start by giving you 5 examples. For each examples I will provide a number of similar captions that are correct.
-                I want you to provide me with 5 similar yet wrong alternative captions."""
+    myPrompt = """we are creating an image understanding test. 
+                Given a few true image descriptions we want to generate wrong descriptions for a multiple-choice test. 
+                The wrong captions need to not match the original image but to be close enough to be challenging and 
+                test the reading comprehension."""
 
     printModelIo('Mission description: ' + myPrompt, True)
 
@@ -221,39 +220,57 @@ if __name__ == '__main__':
 
 
     # Provide examples
-    for i in range(numImages):
-        imageId = my_images['imageIds'][i]
-        trueCaptions = ""
-        for j in range(len(my_images['captions'][imageId])):
-            trueCaptions += my_images['captions'][imageId][j] + "\n"
+    # Load examples file
+    multChoiceFileName = 'In-context learning examples.txt'
+    examples = loadTextFile(os.path.join(inputs_path, multChoiceFileName))
 
-        Preface = "This is Example #" + str(i+1) + ". Following are 5 true sentences:"
-        myPrompt = Preface + "\n" + trueCaptions + "Please verify That you understood this example."
-        printModelIo(myPrompt, True)
+    myPrompt = '\n'.join(examples) + "\nPlease verify That you understood these examples."
+    printModelIo(myPrompt, True)
 
-        # Generate a response from the model
-        response = openai.Completion.create(
-            # engine="text-davinci-003",  # Replace with the appropriate model/engine for GPT-4 or the version you are using
-            model="gpt-3.5-turbo-instruct",
-            # model="gpt-4-vision-preview",
-            prompt=myPrompt,
-            max_tokens=80,  # Adjust based on how long you expect the response to be
-        )
-        # Extract the text from the response
-        printModelIo(response.choices[0].text.strip(), False)
+    # Generate a response from the model
+    response = openai.Completion.create(
+        # engine="text-davinci-003",  # Replace with the appropriate model/engine for GPT-4 or the version you are using
+        model="gpt-3.5-turbo-instruct",
+        # model="gpt-4-vision-preview",
+        prompt=myPrompt,
+        max_tokens=80,  # Adjust based on how long you expect the response to be
+    )
+    # Extract the text from the response
+    printModelIo(response.choices[0].text.strip(), False)
+
+    # for i in range(numImages):
+    #     imageId = my_images['imageIds'][i]
+    #     trueCaptions = ""
+    #     for j in range(len(my_images['captions'][imageId])):
+    #         trueCaptions += my_images['captions'][imageId][j] + "\n"
+    #
+    #     Preface = "This is Example #" + str(i+1) + ". Following are 5 true sentences:"
+    #     myPrompt = Preface + "\n" + trueCaptions + "Please verify That you understood this example."
+    #     printModelIo(myPrompt, True)
+    #
+    #     # Generate a response from the model
+    #     response = openai.Completion.create(
+    #         # engine="text-davinci-003",  # Replace with the appropriate model/engine for GPT-4 or the version you are using
+    #         model="gpt-3.5-turbo-instruct",
+    #         # model="gpt-4-vision-preview",
+    #         prompt=myPrompt,
+    #         max_tokens=80,  # Adjust based on how long you expect the response to be
+    #     )
+    #     # Extract the text from the response
+    #     printModelIo(response.choices[0].text.strip(), False)
 
 
     # Create alternative captions
     modelCaptions = {}
-    for i in range(numImages+1, len(my_images['imageIds'])):
+    for i in range(len(my_images['imageIds'])):
         imageId = my_images['imageIds'][i]
         trueCaptions = ""
         for j in range(len(my_images['captions'][imageId])):
             trueCaptions += my_images['captions'][imageId][j] + "\n"
 
         Preface = "This is Example #" + str(i+1) + ". Following are 5 true sentences:"
-        task = ("Please create 5 similar yet wrong alternative captions. Try to switch attributes among different objects."
-                "Please put each caption in an new line, without numbering the response.")
+        task = ("Please create 5 similar yet wrong alternative captions. "
+                "Please put each caption in a new line, without numbering the response.")
         myPrompt = Preface + "\n" + trueCaptions + task
         printModelIo(myPrompt, True)
 
