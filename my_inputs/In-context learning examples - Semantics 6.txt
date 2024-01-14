@@ -1,0 +1,30 @@
+Example: Correct captions
+A white parrot standing next to a jungle covered hillside.
+Closeup shot of a some type of beautifully white tropical bird
+A white bird is standing in front of plants.
+a white bird with a black beak and some trees and bushes
+A pure white parrot with red eyes and a black beak.
+
+Desired output: Wrong captions
+A colorful bird standing in front of plants.
+A white bird in a cage inside a house.
+A white ferret standing next to a jungle covered hillside.
+A pure white parrot with black eyes and a red beak.
+A white bird next to the sea.
+
+Example: Correct captions
+A small dog sitting at the front of a red motor boat.
+Two men and a dog on a red boat at a pier. 
+Twon men on a boat with a dog at the front.
+a red boat with a dog standing on the front end of the boat. 
+Two people on a small boat with a dog on the boat. 
+
+Desired output: Wrong captions
+Two men and a red dog on a boat at the pier. 
+Three men on a boat with a dog at the front.
+A red boat with two men and a dog standing at the back end of the boat.
+A small dog sitting at the front of a blue motor boat. 
+Two men and a dog on a red boat at the open sea.
+
+Explanation:
+We changed different atributes of objects in the picture. The changes are subtle.

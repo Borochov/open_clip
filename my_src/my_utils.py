@@ -158,9 +158,22 @@ def encodeImageBase64(image_path):
         return base64.b64encode(image_file.read()).decode('utf-8')
 
 
+def getModelResponse(openai, request):
+    # Generate a response from the model
+    response = openai.Completion.create(
+        # engine="text-davinci-003",  # Replace with the appropriate model/engine for GPT-4 or the version you are using
+        model="gpt-3.5-turbo-instruct",
+        # model="gpt-4-vision-preview",
+        prompt=request,
+        max_tokens=100,  # Adjust based on how long you expect the response to be
+    )
+    # Extract the text from the response
+    return response.choices[0].text.strip()
+
+
 def printModelIo(text, isInput):
     action = "request" if isInput else "response"
-    print("*** Model " + action + ": ***")
+    print("**** Model " + action + ": ***")
     print(text + "\n")
 
 

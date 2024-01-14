@@ -160,11 +160,77 @@ def uploadLocalImage():
     print(response.json())
 
 
-def inContextLearning():
+def inContextLearning(my_images):
     print('\n** Running In-Context Learning **\n')
 
+    modelCaptions = {}
+    for imageIdx in range(len(my_images['imageIds'])):
+
+        # Describe mission
+        myPrompt = """This is a new task. We are creating an image understanding test. 
+                    Given a few true image descriptions we want to generate wrong descriptions for a multiple-choice test. 
+                    The wrong captions need to not match the original image but to be close enough to be challenging and 
+                    test the reading comprehension."""
+
+        printModelIo('Mission description: ' + myPrompt, True)
+
+        # Get response from the model
+        response = getModelResponse(openai, myPrompt)
+        # printModelIo(response, False)
 
 
+        # Provide examples
+        # Load examples file
+        multChoiceFileName = 'In-context learning examples - Semantics 6.txt'
+        examples = loadTextFile(os.path.join(inputs_path, multChoiceFileName))
+
+        myPrompt = '\n'.join(examples) + "\nPlease verify That you understood these examples."
+        printModelIo(myPrompt, True)
+
+        # Get response from the model
+        response = getModelResponse(openai, myPrompt)
+        printModelIo(response, False)
+
+
+        # Create alternative captions
+        imageId = my_images['imageIds'][imageIdx]
+        trueCaptions = ""
+        for j in range(len(my_images['captions'][imageId])):
+            trueCaptions += my_images['captions'][imageId][j] + "\n"
+
+        Preface = "Following are 5 true sentences:"
+        task = ("Please create 5 similar yet wrong alternative captions. "
+                "Please put each caption in a new line, without numbering the response.")
+        myPrompt = Preface + "\n" + trueCaptions + task
+        printModelIo(myPrompt, True)
+
+        # Get response from the model
+        response = getModelResponse(openai, myPrompt)
+        printModelIo(response, False)
+
+        # Keep results
+        modelCaptions.update({imageId: response.split('\n')})
+
+    return modelCaptions
+
+## Test model using multiple choices
+def testModel(imagePath, my_images, modelCaptions):
+    # Create multiple choices text
+    results = dict()
+    for i in range(len(my_images['imageIds'])):
+        imageId = my_images['imageIds'][i]
+        if imageId not in list(modelCaptions.keys()):
+            continue
+
+        imageName = my_images['names'][i]
+        choices = modelCaptions[imageId]
+        choices.append(my_images['captions'][imageId][0])  # Correct sentence is last
+
+        # Run cosine similarity test
+        tempDict = cosineSimilarity(model, preprocess, choices, imagePath, imageName)
+        results.update({imageName: tempDict})
+
+    return results
 
 
 def main():
@@ -177,130 +243,23 @@ def main():
     print("Vocab size:", vocab_size)
 
     # sanity()
-    results = semantics()
-    saveResultsToExcel(results, results_path, 'Semantics')
-
-
-
-if __name__ == '__main__':
-    # main()
+    # results = semantics()
 
     # Load captions
     captions = loadCaptions(captions_path)
 
     # Load images and find all captions per image
-    imagePath = dataSetPath + 'Semantics/'
+    imagePath = dataSetPath + 'Semantics6/'
     my_images = findCaptionForImage(imagePath, captions)
 
     # Plot images and matching captions
     # plotImages(my_images, imagePath)
 
+    modelCaptions = inContextLearning(my_images)
 
-    # Start in-context learning
-    # Describe mission
-    numImages = 5
-    myPrompt = """we are creating an image understanding test. 
-                Given a few true image descriptions we want to generate wrong descriptions for a multiple-choice test. 
-                The wrong captions need to not match the original image but to be close enough to be challenging and 
-                test the reading comprehension."""
-
-    printModelIo('Mission description: ' + myPrompt, True)
-
-    # Generate a response from the model
-    response = openai.Completion.create(
-        # engine="text-davinci-003",  # Replace with the appropriate model/engine for GPT-4 or the version you are using
-        model="gpt-3.5-turbo-instruct",
-        # model="gpt-4-vision-preview",
-        prompt=myPrompt,
-        max_tokens=80,  # Adjust based on how long you expect the response to be
-    )
-
-    # Extract the text from the response
-    printModelIo(response.choices[0].text.strip(), False)
-
-
-    # Provide examples
-    # Load examples file
-    multChoiceFileName = 'In-context learning examples.txt'
-    examples = loadTextFile(os.path.join(inputs_path, multChoiceFileName))
-
-    myPrompt = '\n'.join(examples) + "\nPlease verify That you understood these examples."
-    printModelIo(myPrompt, True)
-
-    # Generate a response from the model
-    response = openai.Completion.create(
-        # engine="text-davinci-003",  # Replace with the appropriate model/engine for GPT-4 or the version you are using
-        model="gpt-3.5-turbo-instruct",
-        # model="gpt-4-vision-preview",
-        prompt=myPrompt,
-        max_tokens=80,  # Adjust based on how long you expect the response to be
-    )
-    # Extract the text from the response
-    printModelIo(response.choices[0].text.strip(), False)
-
-    # for i in range(numImages):
-    #     imageId = my_images['imageIds'][i]
-    #     trueCaptions = ""
-    #     for j in range(len(my_images['captions'][imageId])):
-    #         trueCaptions += my_images['captions'][imageId][j] + "\n"
-    #
-    #     Preface = "This is Example #" + str(i+1) + ". Following are 5 true sentences:"
-    #     myPrompt = Preface + "\n" + trueCaptions + "Please verify That you understood this example."
-    #     printModelIo(myPrompt, True)
-    #
-    #     # Generate a response from the model
-    #     response = openai.Completion.create(
-    #         # engine="text-davinci-003",  # Replace with the appropriate model/engine for GPT-4 or the version you are using
-    #         model="gpt-3.5-turbo-instruct",
-    #         # model="gpt-4-vision-preview",
-    #         prompt=myPrompt,
-    #         max_tokens=80,  # Adjust based on how long you expect the response to be
-    #     )
-    #     # Extract the text from the response
-    #     printModelIo(response.choices[0].text.strip(), False)
-
-
-    # Create alternative captions
-    modelCaptions = {}
-    for i in range(len(my_images['imageIds'])):
-        imageId = my_images['imageIds'][i]
-        trueCaptions = ""
-        for j in range(len(my_images['captions'][imageId])):
-            trueCaptions += my_images['captions'][imageId][j] + "\n"
-
-        Preface = "This is Example #" + str(i+1) + ". Following are 5 true sentences:"
-        task = ("Please create 5 similar yet wrong alternative captions. "
-                "Please put each caption in a new line, without numbering the response.")
-        myPrompt = Preface + "\n" + trueCaptions + task
-        printModelIo(myPrompt, True)
-
-        # Generate a response from the model
-        response = openai.Completion.create(
-            # engine="text-davinci-003",  # Replace with the appropriate model/engine for GPT-4 or the version you are using
-            model="gpt-3.5-turbo-instruct",
-            # model="gpt-4-vision-preview",
-            prompt=myPrompt,
-            max_tokens=100,  # Adjust based on how long you expect the response to be
-        )
-        # Extract the text from the response
-        printModelIo(response.choices[0].text.strip(), False)
-
-        # Keep results
-        modelCaptions.update({imageId: response.choices[0].text.strip().split('\n')})
-
-
-    # Create multiple choices text
-    results = dict()
-    for i in range(len(my_images['imageIds'])):
-        imageId = my_images['imageIds'][i]
-        if imageId not in list(modelCaptions.keys()):
-            continue
-
-        imageName = my_images['names'][i]
-        choices = modelCaptions[imageId]
-        choices.append(my_images['captions'][imageId][0])  # Correct sentence is last
-
-        tempDict = cosineSimilarity(model, preprocess, choices, imagePath, imageName)
-        results.update({imageName: tempDict})
-
+    results = testModel(imagePath, my_images, modelCaptions)
     saveResultsToExcel(results, results_path, 'Semantics')
+
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,1136 @@
+** Running In-Context Learning **
+
+**** Model request: ***
+Mission description: This is a new task. We are creating an image understanding test. 
+                    Given a few true image descriptions we want to generate wrong descriptions for a multiple-choice test. 
+                    The wrong captions need to not match the original image but to be close enough to be challenging and 
+                    test the reading comprehension.
+
+**** Model request: ***
+Example: Correct captions
+A white parrot standing next to a jungle covered hillside.
+Closeup shot of a some type of beautifully white tropical bird
+A white bird is standing in front of plants.
+a white bird with a black beak and some trees and bushes
+A pure white parrot with red eyes and a black beak.
+Desired output: Wrong captions
+A colorful bird standing in front of plants.
+A white bird in a cage inside a house.
+A white ferret standing next to a jungle covered hillside.
+A pure white parrot with black eyes and a red beak.
+A white bird next to the sea.
+Example: Correct captions
+A small dog sitting at the front of a red motor boat.
+Two men and a dog on a red boat at a pier. 
+Twon men on a boat with a dog at the front.
+a red boat with a dog standing on the front end of the boat. 
+Two people on a small boat with a dog on the boat. 
+Desired output: Wrong captions
+Two men and a red dog on a boat at the pier. 
+Three men on a boat with a dog at the front.
+A red boat with two men and a dog standing at the back end of the boat.
+A small dog sitting at the front of a blue motor boat. 
+Two men and a dog on a red boat at the open sea.
+Explanation:
+We changed different atributes of objects in the picture. The changes are subtle.
+Please verify That you understood these examples.
+
+**** Model response: ***
+Yes, I understood the examples. In the first set of captions, the changes were made to the type of bird, its location, and its features such as the beak and eyes. In the second set of captions, the changes were made to the color of the dog, the number of people on the boat, and the location of the boat. These changes are subtle but significant enough to create a descriptive caption that does not accurately reflect the image in the same way.
+
+**** Model request: ***
+Following are 5 true sentences:
+A table is adorned with cake, berries and bagels along with other empty dishes. 
+Plates filled with cakes and deserts on top of a wooden table.
+Dinner table set with different fruits, pies, and breads. 
+A table full of food, plates, and silverware.
+A table is set for dinner, with food and dining plates.
+Please create 5 similar yet wrong alternative captions. Please put each caption in a new line, without numbering the response.
+
+**** Model response: ***
+A table appears to be empty, with no signs of food or dishes in sight.
+A lone cup sits on a bare table, with no evidence of a feast. 
+Plastic toys and crayons are scattered across a table, with no sign of any edible treats. 
+A table is adorned with pencils, papers, and books, but no food can be seen. 
+A single napkin lies crumpled on an otherwise bare table, with no signs of a meal.
+
+**** Model request: ***
+Mission description: This is a new task. We are creating an image understanding test. 
+                    Given a few true image descriptions we want to generate wrong descriptions for a multiple-choice test. 
+                    The wrong captions need to not match the original image but to be close enough to be challenging and 
+                    test the reading comprehension.
+
+**** Model request: ***
+Example: Correct captions
+A white parrot standing next to a jungle covered hillside.
+Closeup shot of a some type of beautifully white tropical bird
+A white bird is standing in front of plants.
+a white bird with a black beak and some trees and bushes
+A pure white parrot with red eyes and a black beak.
+Desired output: Wrong captions
+A colorful bird standing in front of plants.
+A white bird in a cage inside a house.
+A white ferret standing next to a jungle covered hillside.
+A pure white parrot with black eyes and a red beak.
+A white bird next to the sea.
+Example: Correct captions
+A small dog sitting at the front of a red motor boat.
+Two men and a dog on a red boat at a pier. 
+Twon men on a boat with a dog at the front.
+a red boat with a dog standing on the front end of the boat. 
+Two people on a small boat with a dog on the boat. 
+Desired output: Wrong captions
+Two men and a red dog on a boat at the pier. 
+Three men on a boat with a dog at the front.
+A red boat with two men and a dog standing at the back end of the boat.
+A small dog sitting at the front of a blue motor boat. 
+Two men and a dog on a red boat at the open sea.
+Explanation:
+We changed different atributes of objects in the picture. The changes are subtle.
+Please verify That you understood these examples.
+
+**** Model response: ***
+Yes, I understand the examples. In order to create wrong captions, the attributes of the objects in the picture were changed slightly to create a misleading description. This helps to illustrate the importance of accurately describing what is depicted in a picture or photograph for the sake of accuracy and clarity.
+
+**** Model request: ***
+Following are 5 true sentences:
+A group of three vases sitting next to each other.
+White and brown bowl in the middle of two odd cups.
+Three bowls of various sizes and shapes.  
+Two vases and a bowl side by side.
+There is two vases and one bowl on display on the table. 
+Please create 5 similar yet wrong alternative captions. Please put each caption in a new line, without numbering the response.
+
+**** Model response: ***
+One small vase and two large cups together.
+A blue and red vase placed between a tall and short bowl.
+Three square-shaped plates lined up next to each other.
+A mismatched set of three cups stacked on top of each other.
+A tray holding two spherical bowls and a rectangular vase.
+
+**** Model request: ***
+Mission description: This is a new task. We are creating an image understanding test. 
+                    Given a few true image descriptions we want to generate wrong descriptions for a multiple-choice test. 
+                    The wrong captions need to not match the original image but to be close enough to be challenging and 
+                    test the reading comprehension.
+
+**** Model request: ***
+Example: Correct captions
+A white parrot standing next to a jungle covered hillside.
+Closeup shot of a some type of beautifully white tropical bird
+A white bird is standing in front of plants.
+a white bird with a black beak and some trees and bushes
+A pure white parrot with red eyes and a black beak.
+Desired output: Wrong captions
+A colorful bird standing in front of plants.
+A white bird in a cage inside a house.
+A white ferret standing next to a jungle covered hillside.
+A pure white parrot with black eyes and a red beak.
+A white bird next to the sea.
+Example: Correct captions
+A small dog sitting at the front of a red motor boat.
+Two men and a dog on a red boat at a pier. 
+Twon men on a boat with a dog at the front.
+a red boat with a dog standing on the front end of the boat. 
+Two people on a small boat with a dog on the boat. 
+Desired output: Wrong captions
+Two men and a red dog on a boat at the pier. 
+Three men on a boat with a dog at the front.
+A red boat with two men and a dog standing at the back end of the boat.
+A small dog sitting at the front of a blue motor boat. 
+Two men and a dog on a red boat at the open sea.
+Explanation:
+We changed different atributes of objects in the picture. The changes are subtle.
+Please verify That you understood these examples.
+
+**** Model response: ***
+Yes, I understand the examples. In the first set, the changes were made to the color of the bird and the surrounding environment. In the second set, the changes were made to the number and location of people and the color of the boat and dog. These changes highlight the importance of providing accurate and specific descriptions in captions rather than making assumptions or generalizations.
+
+**** Model request: ***
+Following are 5 true sentences:
+a person walking across the street with a traffic light above
+A person that is walking on the street.
+The pedestrian crosses the lit city street at nightitme.
+A person crossing a street next to a crosswalk.
+A person crosses a street under a streetlight at dusk.
+Please create 5 similar yet wrong alternative captions. Please put each caption in a new line, without numbering the response.
+
+**** Model response: ***
+A dog strolling across the road with a traffic light in the background.
+A person running along the sidewalk.
+The car passes by the busy city street during the day.
+A bicycle crossing the street near a pedestrian crossing.
+A person standing on the street corner under a flickering streetlamp.
+
+**** Model request: ***
+Mission description: This is a new task. We are creating an image understanding test. 
+                    Given a few true image descriptions we want to generate wrong descriptions for a multiple-choice test. 
+                    The wrong captions need to not match the original image but to be close enough to be challenging and 
+                    test the reading comprehension.
+
+**** Model request: ***
+Example: Correct captions
+A white parrot standing next to a jungle covered hillside.
+Closeup shot of a some type of beautifully white tropical bird
+A white bird is standing in front of plants.
+a white bird with a black beak and some trees and bushes
+A pure white parrot with red eyes and a black beak.
+Desired output: Wrong captions
+A colorful bird standing in front of plants.
+A white bird in a cage inside a house.
+A white ferret standing next to a jungle covered hillside.
+A pure white parrot with black eyes and a red beak.
+A white bird next to the sea.
+Example: Correct captions
+A small dog sitting at the front of a red motor boat.
+Two men and a dog on a red boat at a pier. 
+Twon men on a boat with a dog at the front.
+a red boat with a dog standing on the front end of the boat. 
+Two people on a small boat with a dog on the boat. 
+Desired output: Wrong captions
+Two men and a red dog on a boat at the pier. 
+Three men on a boat with a dog at the front.
+A red boat with two men and a dog standing at the back end of the boat.
+A small dog sitting at the front of a blue motor boat. 
+Two men and a dog on a red boat at the open sea.
+Explanation:
+We changed different atributes of objects in the picture. The changes are subtle.
+Please verify That you understood these examples.
+
+**** Model response: ***
+Yes, I understand the examples. The changes in the attributes of the objects in the pictures are small but have a significant impact on the accuracy of the captions.
+
+**** Model request: ***
+Following are 5 true sentences:
+Two women stand and talk on the beach while holding surfboards
+Two women on beach with surfboards under arms.
+Two people holding surfboards on the beach with surfers in the water.
+Women with surfboards on the beach by the ocean
+Two woman on the beach holding their surfboards
+Please create 5 similar yet wrong alternative captions. Please put each caption in a new line, without numbering the response.
+
+**** Model response: ***
+Three men stand and chat on the beach without surfboards.
+A group of people sunbathe on the beach without any surfboards in sight.
+Two women take a walk on the beach, leaving their surfboards behind.
+A couple watches the sunset on the beach, no surfboards in sight.
+Three surfers hang out on the beach without any surfboards nearby.
+
+**** Model request: ***
+Mission description: This is a new task. We are creating an image understanding test. 
+                    Given a few true image descriptions we want to generate wrong descriptions for a multiple-choice test. 
+                    The wrong captions need to not match the original image but to be close enough to be challenging and 
+                    test the reading comprehension.
+
+**** Model request: ***
+Example: Correct captions
+A white parrot standing next to a jungle covered hillside.
+Closeup shot of a some type of beautifully white tropical bird
+A white bird is standing in front of plants.
+a white bird with a black beak and some trees and bushes
+A pure white parrot with red eyes and a black beak.
+Desired output: Wrong captions
+A colorful bird standing in front of plants.
+A white bird in a cage inside a house.
+A white ferret standing next to a jungle covered hillside.
+A pure white parrot with black eyes and a red beak.
+A white bird next to the sea.
+Example: Correct captions
+A small dog sitting at the front of a red motor boat.
+Two men and a dog on a red boat at a pier. 
+Twon men on a boat with a dog at the front.
+a red boat with a dog standing on the front end of the boat. 
+Two people on a small boat with a dog on the boat. 
+Desired output: Wrong captions
+Two men and a red dog on a boat at the pier. 
+Three men on a boat with a dog at the front.
+A red boat with two men and a dog standing at the back end of the boat.
+A small dog sitting at the front of a blue motor boat. 
+Two men and a dog on a red boat at the open sea.
+Explanation:
+We changed different atributes of objects in the picture. The changes are subtle.
+Please verify That you understood these examples.
+
+**** Model response: ***
+Yes, I understand the changes made in the wrong captions and why they are incorrect. The changes are minor but they create a different or inaccurate description of the image.
+
+**** Model request: ***
+Following are 5 true sentences:
+A little boy that is standing in the dirt next to a basket.
+A child in a yellow coat watching over potatoes.
+A boy is standing next to a table full of oranges.
+A boy standing in front of a large basket filled with fruit.
+A sad little boy standing in front of a basket of fruit.
+Please create 5 similar yet wrong alternative captions. Please put each caption in a new line, without numbering the response.
+
+**** Model response: ***
+A little girl reaching for the clouds while standing in a pile of leaves.
+A group of children playing in a muddy field next to a wheelbarrow.
+A young boy picking flowers in a garden filled with vegetables.
+A child wearing a pink tutu dancing in a farm full of goats.
+A boy sitting on a fence overlooking a field of watermelons.
+
+**** Model request: ***
+Mission description: This is a new task. We are creating an image understanding test. 
+                    Given a few true image descriptions we want to generate wrong descriptions for a multiple-choice test. 
+                    The wrong captions need to not match the original image but to be close enough to be challenging and 
+                    test the reading comprehension.
+
+**** Model request: ***
+Example: Correct captions
+A white parrot standing next to a jungle covered hillside.
+Closeup shot of a some type of beautifully white tropical bird
+A white bird is standing in front of plants.
+a white bird with a black beak and some trees and bushes
+A pure white parrot with red eyes and a black beak.
+Desired output: Wrong captions
+A colorful bird standing in front of plants.
+A white bird in a cage inside a house.
+A white ferret standing next to a jungle covered hillside.
+A pure white parrot with black eyes and a red beak.
+A white bird next to the sea.
+Example: Correct captions
+A small dog sitting at the front of a red motor boat.
+Two men and a dog on a red boat at a pier. 
+Twon men on a boat with a dog at the front.
+a red boat with a dog standing on the front end of the boat. 
+Two people on a small boat with a dog on the boat. 
+Desired output: Wrong captions
+Two men and a red dog on a boat at the pier. 
+Three men on a boat with a dog at the front.
+A red boat with two men and a dog standing at the back end of the boat.
+A small dog sitting at the front of a blue motor boat. 
+Two men and a dog on a red boat at the open sea.
+Explanation:
+We changed different atributes of objects in the picture. The changes are subtle.
+Please verify That you understood these examples.
+
+**** Model response: ***
+Yes, I understood the examples. The changes in the captions involve using different descriptors for the objects, such as a different color or location, while still accurately representing the elements in the picture.
+
+**** Model request: ***
+Following are 5 true sentences:
+People on a boat looking at a plane in the water.
+A man and woman are riding a speedboat near a plane that is landed in the water.
+Woman on boat taking photo of a plane. 
+A motor boat driving next to a Coulson flying tanker plane that has landed in the water.
+a boat with some people and a red and white plane
+Please create 5 similar yet wrong alternative captions. Please put each caption in a new line, without numbering the response.
+
+**** Model response: ***
+A group of friends on a boat admiring the sunset.
+A couple enjoying a peaceful day on their yacht.
+A woman capturing a photo of a rare species of bird in the lake.
+A small fishing boat cruising by a broken down plane.
+A group of tourists on a boat tour passing by an abandoned seaplane.
+
+**** Model request: ***
+Mission description: This is a new task. We are creating an image understanding test. 
+                    Given a few true image descriptions we want to generate wrong descriptions for a multiple-choice test. 
+                    The wrong captions need to not match the original image but to be close enough to be challenging and 
+                    test the reading comprehension.
+
+**** Model request: ***
+Example: Correct captions
+A white parrot standing next to a jungle covered hillside.
+Closeup shot of a some type of beautifully white tropical bird
+A white bird is standing in front of plants.
+a white bird with a black beak and some trees and bushes
+A pure white parrot with red eyes and a black beak.
+Desired output: Wrong captions
+A colorful bird standing in front of plants.
+A white bird in a cage inside a house.
+A white ferret standing next to a jungle covered hillside.
+A pure white parrot with black eyes and a red beak.
+A white bird next to the sea.
+Example: Correct captions
+A small dog sitting at the front of a red motor boat.
+Two men and a dog on a red boat at a pier. 
+Twon men on a boat with a dog at the front.
+a red boat with a dog standing on the front end of the boat. 
+Two people on a small boat with a dog on the boat. 
+Desired output: Wrong captions
+Two men and a red dog on a boat at the pier. 
+Three men on a boat with a dog at the front.
+A red boat with two men and a dog standing at the back end of the boat.
+A small dog sitting at the front of a blue motor boat. 
+Two men and a dog on a red boat at the open sea.
+Explanation:
+We changed different atributes of objects in the picture. The changes are subtle.
+Please verify That you understood these examples.
+
+**** Model response: ***
+Yes, I understand the examples. The changes made in the second set of captions are subtle but important, as they can alter the overall description or narrative of the image. In the first set of captions, the changes were minor and did not significantly impact the description of the image.
+
+**** Model request: ***
+Following are 5 true sentences:
+A cat sitting on top of a seat behind a steering wheel.
+A cat is sitting in the driver's seat while staring at the pedals.
+Grey tabby cat sitting in the drivers seat of a car.
+A cat sitting in front of a car steering wheel.
+A cat sitting in the driver's seat of a car.
+Please create 5 similar yet wrong alternative captions. Please put each caption in a new line, without numbering the response.
+
+**** Model response: ***
+A dog sitting on a chair pretending to drive a car.
+A hamster taking over the wheel of a toy car.
+A lizard sitting on a computer keyboard pretending to drive.
+A parrot sitting on a bicycle seat pretending to be in a car.
+A raccoon sitting on top of a shopping cart acting as if it's driving.
+
+**** Model request: ***
+Mission description: This is a new task. We are creating an image understanding test. 
+                    Given a few true image descriptions we want to generate wrong descriptions for a multiple-choice test. 
+                    The wrong captions need to not match the original image but to be close enough to be challenging and 
+                    test the reading comprehension.
+
+**** Model request: ***
+Example: Correct captions
+A white parrot standing next to a jungle covered hillside.
+Closeup shot of a some type of beautifully white tropical bird
+A white bird is standing in front of plants.
+a white bird with a black beak and some trees and bushes
+A pure white parrot with red eyes and a black beak.
+Desired output: Wrong captions
+A colorful bird standing in front of plants.
+A white bird in a cage inside a house.
+A white ferret standing next to a jungle covered hillside.
+A pure white parrot with black eyes and a red beak.
+A white bird next to the sea.
+Example: Correct captions
+A small dog sitting at the front of a red motor boat.
+Two men and a dog on a red boat at a pier. 
+Twon men on a boat with a dog at the front.
+a red boat with a dog standing on the front end of the boat. 
+Two people on a small boat with a dog on the boat. 
+Desired output: Wrong captions
+Two men and a red dog on a boat at the pier. 
+Three men on a boat with a dog at the front.
+A red boat with two men and a dog standing at the back end of the boat.
+A small dog sitting at the front of a blue motor boat. 
+Two men and a dog on a red boat at the open sea.
+Explanation:
+We changed different atributes of objects in the picture. The changes are subtle.
+Please verify That you understood these examples.
+
+**** Model response: ***
+Yes, I understand the examples. The changes in the atributes of objects are subtle and need to be paid attention to when writing captions for images.
+
+**** Model request: ***
+Following are 5 true sentences:
+a black bear holding onto a tree as he reaches for a coconut with his mouth
+there is a black bear that is eating fruit from a tree
+A bear that is trying to eat some fruit off a tree.
+A black bear climbs pole to get a fruit.
+A small bear climbing a tree attempts to eat a coconut.  
+Please create 5 similar yet wrong alternative captions. Please put each caption in a new line, without numbering the response.
+
+**** Model response: ***
+A polar bear trying to reach cookies on a high shelf.
+A black bear stealing honey from a beehive.
+A grizzly bear hanging from a tree branch to grab berries.
+A panda bear balancing on a unicycle while picking apples.
+A koala bear swinging from a tree branch to grab eucalyptus leaves.
+
+**** Model request: ***
+Mission description: This is a new task. We are creating an image understanding test. 
+                    Given a few true image descriptions we want to generate wrong descriptions for a multiple-choice test. 
+                    The wrong captions need to not match the original image but to be close enough to be challenging and 
+                    test the reading comprehension.
+
+**** Model request: ***
+Example: Correct captions
+A white parrot standing next to a jungle covered hillside.
+Closeup shot of a some type of beautifully white tropical bird
+A white bird is standing in front of plants.
+a white bird with a black beak and some trees and bushes
+A pure white parrot with red eyes and a black beak.
+Desired output: Wrong captions
+A colorful bird standing in front of plants.
+A white bird in a cage inside a house.
+A white ferret standing next to a jungle covered hillside.
+A pure white parrot with black eyes and a red beak.
+A white bird next to the sea.
+Example: Correct captions
+A small dog sitting at the front of a red motor boat.
+Two men and a dog on a red boat at a pier. 
+Twon men on a boat with a dog at the front.
+a red boat with a dog standing on the front end of the boat. 
+Two people on a small boat with a dog on the boat. 
+Desired output: Wrong captions
+Two men and a red dog on a boat at the pier. 
+Three men on a boat with a dog at the front.
+A red boat with two men and a dog standing at the back end of the boat.
+A small dog sitting at the front of a blue motor boat. 
+Two men and a dog on a red boat at the open sea.
+Explanation:
+We changed different atributes of objects in the picture. The changes are subtle.
+Please verify That you understood these examples.
+
+**** Model response: ***
+Yes, I understand the changes made in the examples. Different descriptions and details were swapped for others, but the overall image remained the same. This shows how captions can greatly impact the perception of an image.
+
+**** Model request: ***
+Following are 5 true sentences:
+A group of four people standing next to each other.
+Four people in ski clothes stand on skis with their ski poles as snowy mountains are in the background.
+Four people in skis on top of a snowy mountain.
+Group of skiers posing for a picture with snow mountains behind them. 
+A group of people are standing on snowboards and skis.
+Please create 5 similar yet wrong alternative captions. Please put each caption in a new line, without numbering the response.
+
+**** Model response: ***
+A family of four enjoying a picnic in a green field.
+Four coworkers standing in line for coffee.
+Four tourists posing by a beach with their cameras ready.
+A group of four hikers taking a break on a rocky trail.
+Four people dressed in business attire waiting for a taxi in a cityscape.
+
+**** Model request: ***
+Mission description: This is a new task. We are creating an image understanding test. 
+                    Given a few true image descriptions we want to generate wrong descriptions for a multiple-choice test. 
+                    The wrong captions need to not match the original image but to be close enough to be challenging and 
+                    test the reading comprehension.
+
+**** Model request: ***
+Example: Correct captions
+A white parrot standing next to a jungle covered hillside.
+Closeup shot of a some type of beautifully white tropical bird
+A white bird is standing in front of plants.
+a white bird with a black beak and some trees and bushes
+A pure white parrot with red eyes and a black beak.
+Desired output: Wrong captions
+A colorful bird standing in front of plants.
+A white bird in a cage inside a house.
+A white ferret standing next to a jungle covered hillside.
+A pure white parrot with black eyes and a red beak.
+A white bird next to the sea.
+Example: Correct captions
+A small dog sitting at the front of a red motor boat.
+Two men and a dog on a red boat at a pier. 
+Twon men on a boat with a dog at the front.
+a red boat with a dog standing on the front end of the boat. 
+Two people on a small boat with a dog on the boat. 
+Desired output: Wrong captions
+Two men and a red dog on a boat at the pier. 
+Three men on a boat with a dog at the front.
+A red boat with two men and a dog standing at the back end of the boat.
+A small dog sitting at the front of a blue motor boat. 
+Two men and a dog on a red boat at the open sea.
+Explanation:
+We changed different atributes of objects in the picture. The changes are subtle.
+Please verify That you understood these examples.
+
+**** Model response: ***
+Yes, I understand that the changes made in the captions are subtle and they involve changing the color, size, and location of objects in the picture. These changes can make a big difference in the accuracy of the captions.
+
+**** Model request: ***
+Following are 5 true sentences:
+A woman is holding a small bunch of fruit.
+A woman with a backpack holding a small bunch of bananas.
+A woman in a forest holding small green bananas.
+A woman surrounded by tall green plants and holding a bunch of small bananas.
+A woman in the woods with a bunch of bananas. 
+Please create 5 similar yet wrong alternative captions. Please put each caption in a new line, without numbering the response.
+
+**** Model response: ***
+A man is holding a large bouquet of flowers.
+A man with a suitcase holding a large bouquet of apples.
+A man in a garden holding big pink apples.
+A man surrounded by miniature plants and holding a bunch of large apples.
+A man in a park with a bunch of apples.
+
+**** Model request: ***
+Mission description: This is a new task. We are creating an image understanding test. 
+                    Given a few true image descriptions we want to generate wrong descriptions for a multiple-choice test. 
+                    The wrong captions need to not match the original image but to be close enough to be challenging and 
+                    test the reading comprehension.
+
+**** Model request: ***
+Example: Correct captions
+A white parrot standing next to a jungle covered hillside.
+Closeup shot of a some type of beautifully white tropical bird
+A white bird is standing in front of plants.
+a white bird with a black beak and some trees and bushes
+A pure white parrot with red eyes and a black beak.
+Desired output: Wrong captions
+A colorful bird standing in front of plants.
+A white bird in a cage inside a house.
+A white ferret standing next to a jungle covered hillside.
+A pure white parrot with black eyes and a red beak.
+A white bird next to the sea.
+Example: Correct captions
+A small dog sitting at the front of a red motor boat.
+Two men and a dog on a red boat at a pier. 
+Twon men on a boat with a dog at the front.
+a red boat with a dog standing on the front end of the boat. 
+Two people on a small boat with a dog on the boat. 
+Desired output: Wrong captions
+Two men and a red dog on a boat at the pier. 
+Three men on a boat with a dog at the front.
+A red boat with two men and a dog standing at the back end of the boat.
+A small dog sitting at the front of a blue motor boat. 
+Two men and a dog on a red boat at the open sea.
+Explanation:
+We changed different atributes of objects in the picture. The changes are subtle.
+Please verify That you understood these examples.
+
+**** Model response: ***
+Yes, I understand the examples. This exercise helps practice the importance of accurately describing details in a visual scene. Changing small details can completely change the meaning of the caption.
+
+**** Model request: ***
+Following are 5 true sentences:
+A newly married couple cutting their wedding cake.
+a bride and groom are cutting a white cake
+A newly married couple cutting a triple layer cake.
+A bride and groom cutting their wedding cake.
+A married couple in a spotlight with a wedding cake. 
+Please create 5 similar yet wrong alternative captions. Please put each caption in a new line, without numbering the response.
+
+**** Model response: ***
+A pair of strangers cutting a random cake.
+Two friends cutting a cake at a birthday party.
+A man and a woman cutting a cake at a retirement party.
+A father and daughter cutting a cake at a father-daughter dance.
+Two coworkers cutting a cake at a farewell party.
+
+**** Model request: ***
+Mission description: This is a new task. We are creating an image understanding test. 
+                    Given a few true image descriptions we want to generate wrong descriptions for a multiple-choice test. 
+                    The wrong captions need to not match the original image but to be close enough to be challenging and 
+                    test the reading comprehension.
+
+**** Model request: ***
+Example: Correct captions
+A white parrot standing next to a jungle covered hillside.
+Closeup shot of a some type of beautifully white tropical bird
+A white bird is standing in front of plants.
+a white bird with a black beak and some trees and bushes
+A pure white parrot with red eyes and a black beak.
+Desired output: Wrong captions
+A colorful bird standing in front of plants.
+A white bird in a cage inside a house.
+A white ferret standing next to a jungle covered hillside.
+A pure white parrot with black eyes and a red beak.
+A white bird next to the sea.
+Example: Correct captions
+A small dog sitting at the front of a red motor boat.
+Two men and a dog on a red boat at a pier. 
+Twon men on a boat with a dog at the front.
+a red boat with a dog standing on the front end of the boat. 
+Two people on a small boat with a dog on the boat. 
+Desired output: Wrong captions
+Two men and a red dog on a boat at the pier. 
+Three men on a boat with a dog at the front.
+A red boat with two men and a dog standing at the back end of the boat.
+A small dog sitting at the front of a blue motor boat. 
+Two men and a dog on a red boat at the open sea.
+Explanation:
+We changed different atributes of objects in the picture. The changes are subtle.
+Please verify That you understood these examples.
+
+**** Model response: ***
+Yes, I understand the changes made in the examples. Different details were altered in the captions, such as the color of the objects, their location, and the size of the dog. These changes can significantly affect the accuracy and overall essence of the caption.
+
+**** Model request: ***
+Following are 5 true sentences:
+A demonic looking chucky like doll standing next to a white clock.
+A painting of a doll sitting down and a clock close by.
+A disturbing doll sits next to a clock in a mirrored image.
+A red headed doll sitting next to a clock.
+A mirror image of a red haired doll clock.
+Please create 5 similar yet wrong alternative captions. Please put each caption in a new line, without numbering the response.
+
+**** Model response: ***
+A charming child's toy stands next to a timekeeper.
+A portrait of a beautiful doll resting and a timepiece nearby.
+An unsettling puppet resting alongside a clock in a reflection.
+A redhead figurine sitting beside a clock.
+A mirrored image of a playful ginger doll and a clock.
+
+**** Model request: ***
+Mission description: This is a new task. We are creating an image understanding test. 
+                    Given a few true image descriptions we want to generate wrong descriptions for a multiple-choice test. 
+                    The wrong captions need to not match the original image but to be close enough to be challenging and 
+                    test the reading comprehension.
+
+**** Model request: ***
+Example: Correct captions
+A white parrot standing next to a jungle covered hillside.
+Closeup shot of a some type of beautifully white tropical bird
+A white bird is standing in front of plants.
+a white bird with a black beak and some trees and bushes
+A pure white parrot with red eyes and a black beak.
+Desired output: Wrong captions
+A colorful bird standing in front of plants.
+A white bird in a cage inside a house.
+A white ferret standing next to a jungle covered hillside.
+A pure white parrot with black eyes and a red beak.
+A white bird next to the sea.
+Example: Correct captions
+A small dog sitting at the front of a red motor boat.
+Two men and a dog on a red boat at a pier. 
+Twon men on a boat with a dog at the front.
+a red boat with a dog standing on the front end of the boat. 
+Two people on a small boat with a dog on the boat. 
+Desired output: Wrong captions
+Two men and a red dog on a boat at the pier. 
+Three men on a boat with a dog at the front.
+A red boat with two men and a dog standing at the back end of the boat.
+A small dog sitting at the front of a blue motor boat. 
+Two men and a dog on a red boat at the open sea.
+Explanation:
+We changed different atributes of objects in the picture. The changes are subtle.
+Please verify That you understood these examples.
+
+**** Model response: ***
+Yes, I understood the examples. In each example, the captions have changed slightly to describe different aspects or details of the subject in the picture. This shows the importance of paying attention to details and accurately describing them in captions.
+
+**** Model request: ***
+Following are 5 true sentences:
+A teddy bear is positioned to read a text book.
+A teddy bear sits in a chair with an open book.
+Teddy bear comically reading textbook on kitchen table.
+Teddy bear in a chair with a book opened up in front of it.
+A brown teddy bear sitting in front of an open book.
+Please create 5 similar yet wrong alternative captions. Please put each caption in a new line, without numbering the response.
+
+**** Model response: ***
+A teddy bear is standing on its head to read a cellphone.
+A teddy bear is wearing sunglasses and holding a pencil while staring at a blank notebook.
+Teddy bear attempting to solve a Rubik's cube on a bed.
+Teddy bear lounging in a hammock with a laptop on its lap.
+A group of teddy bears having a tea party with books as their dinner plates.
+
+**** Model request: ***
+Mission description: This is a new task. We are creating an image understanding test. 
+                    Given a few true image descriptions we want to generate wrong descriptions for a multiple-choice test. 
+                    The wrong captions need to not match the original image but to be close enough to be challenging and 
+                    test the reading comprehension.
+
+**** Model request: ***
+Example: Correct captions
+A white parrot standing next to a jungle covered hillside.
+Closeup shot of a some type of beautifully white tropical bird
+A white bird is standing in front of plants.
+a white bird with a black beak and some trees and bushes
+A pure white parrot with red eyes and a black beak.
+Desired output: Wrong captions
+A colorful bird standing in front of plants.
+A white bird in a cage inside a house.
+A white ferret standing next to a jungle covered hillside.
+A pure white parrot with black eyes and a red beak.
+A white bird next to the sea.
+Example: Correct captions
+A small dog sitting at the front of a red motor boat.
+Two men and a dog on a red boat at a pier. 
+Twon men on a boat with a dog at the front.
+a red boat with a dog standing on the front end of the boat. 
+Two people on a small boat with a dog on the boat. 
+Desired output: Wrong captions
+Two men and a red dog on a boat at the pier. 
+Three men on a boat with a dog at the front.
+A red boat with two men and a dog standing at the back end of the boat.
+A small dog sitting at the front of a blue motor boat. 
+Two men and a dog on a red boat at the open sea.
+Explanation:
+We changed different atributes of objects in the picture. The changes are subtle.
+Please verify That you understood these examples.
+
+**** Model response: ***
+Yes, I understand the examples. The correct captions accurately describe the objects and their surroundings, while the wrong captions either have incorrect or missing details about the objects or their surroundings.
+
+**** Model request: ***
+Following are 5 true sentences:
+A boy and a dog in a necktie
+a boy looking at a dog wearing a collar and tie
+A boy with red hair standing in front of a black and white dog.
+A young boy looking at a dog wearing a tie.
+A dog with a tie and shirt colar sitting in a bed.
+Please create 5 similar yet wrong alternative captions. Please put each caption in a new line, without numbering the response.
+
+**** Model response: ***
+A boy and a cat in a necktie
+A boy in a top hat and a dog in a bowtie
+A girl with pink hair standing in front of a brown and white dog
+A young girl admiring a dog wearing a suit and tie
+A dog wearing a tutu and a cat in a tuxedo standing in a field.
+
+**** Model request: ***
+Mission description: This is a new task. We are creating an image understanding test. 
+                    Given a few true image descriptions we want to generate wrong descriptions for a multiple-choice test. 
+                    The wrong captions need to not match the original image but to be close enough to be challenging and 
+                    test the reading comprehension.
+
+**** Model request: ***
+Example: Correct captions
+A white parrot standing next to a jungle covered hillside.
+Closeup shot of a some type of beautifully white tropical bird
+A white bird is standing in front of plants.
+a white bird with a black beak and some trees and bushes
+A pure white parrot with red eyes and a black beak.
+Desired output: Wrong captions
+A colorful bird standing in front of plants.
+A white bird in a cage inside a house.
+A white ferret standing next to a jungle covered hillside.
+A pure white parrot with black eyes and a red beak.
+A white bird next to the sea.
+Example: Correct captions
+A small dog sitting at the front of a red motor boat.
+Two men and a dog on a red boat at a pier. 
+Twon men on a boat with a dog at the front.
+a red boat with a dog standing on the front end of the boat. 
+Two people on a small boat with a dog on the boat. 
+Desired output: Wrong captions
+Two men and a red dog on a boat at the pier. 
+Three men on a boat with a dog at the front.
+A red boat with two men and a dog standing at the back end of the boat.
+A small dog sitting at the front of a blue motor boat. 
+Two men and a dog on a red boat at the open sea.
+Explanation:
+We changed different atributes of objects in the picture. The changes are subtle.
+Please verify That you understood these examples.
+
+**** Model response: ***
+Yes, I understand. In the first set of examples, the changed attributes include the type and color of the bird, the presence of a cage and a body part (beak or eyes), and the added description of the setting. In the second set of examples, the changes include the number and gender of people, the color and location of the dog, and the type and location of the boat. These changes may seem small, but they significantly alter the descriptions and could potentially mislead the
+
+**** Model request: ***
+Following are 5 true sentences:
+A close up view of a bunch of electronics.
+A cellphone, wallet, and pen sitting in front of a bag.
+AN ASSORTMENT OF NECESSITIES LAYING NEXT TO A BAG
+A handbag beside a cell phone, a pen, a pocketknife and a wallet
+a number of items with a cell phone and a pen
+Please create 5 similar yet wrong alternative captions. Please put each caption in a new line, without numbering the response.
+
+**** Model response: ***
+A colorful array of pencils, erasers, and staplers.
+A laptop and charger on a desk surrounded by papers.
+A group of shoes and socks on a shoe rack.
+A cup of coffee and donut sitting on a table next to a book.
+A stack of books and a pair of glasses on a nightstand.
+
+**** Model request: ***
+Mission description: This is a new task. We are creating an image understanding test. 
+                    Given a few true image descriptions we want to generate wrong descriptions for a multiple-choice test. 
+                    The wrong captions need to not match the original image but to be close enough to be challenging and 
+                    test the reading comprehension.
+
+**** Model request: ***
+Example: Correct captions
+A white parrot standing next to a jungle covered hillside.
+Closeup shot of a some type of beautifully white tropical bird
+A white bird is standing in front of plants.
+a white bird with a black beak and some trees and bushes
+A pure white parrot with red eyes and a black beak.
+Desired output: Wrong captions
+A colorful bird standing in front of plants.
+A white bird in a cage inside a house.
+A white ferret standing next to a jungle covered hillside.
+A pure white parrot with black eyes and a red beak.
+A white bird next to the sea.
+Example: Correct captions
+A small dog sitting at the front of a red motor boat.
+Two men and a dog on a red boat at a pier. 
+Twon men on a boat with a dog at the front.
+a red boat with a dog standing on the front end of the boat. 
+Two people on a small boat with a dog on the boat. 
+Desired output: Wrong captions
+Two men and a red dog on a boat at the pier. 
+Three men on a boat with a dog at the front.
+A red boat with two men and a dog standing at the back end of the boat.
+A small dog sitting at the front of a blue motor boat. 
+Two men and a dog on a red boat at the open sea.
+Explanation:
+We changed different atributes of objects in the picture. The changes are subtle.
+Please verify That you understood these examples.
+
+**** Model response: ***
+Yes, I understand. The changes in the captions could potentially create confusion or give a different impression of the image. It is important to accurately describe the elements of the image to avoid giving a wrong message or misinterpreting the scene.
+
+**** Model request: ***
+Following are 5 true sentences:
+Four young adults standing and playing a video game.
+Young kinds playing video games in a hallway.
+A group of people playing a video game on the Wii and a projector.
+A group of young men and women standing around a projector.
+A group of people are playing a video game.
+Please create 5 similar yet wrong alternative captions. Please put each caption in a new line, without numbering the response.
+
+**** Model response: ***
+A group of elderly individuals playing a board game.
+A child alone playing on a tablet.
+A few dogs sitting and watching a gaming console.
+An empty room with only a video game controller.
+A group of dancers performing on a stage set up with gaming equipment.
+
+**** Model request: ***
+Mission description: This is a new task. We are creating an image understanding test. 
+                    Given a few true image descriptions we want to generate wrong descriptions for a multiple-choice test. 
+                    The wrong captions need to not match the original image but to be close enough to be challenging and 
+                    test the reading comprehension.
+
+**** Model request: ***
+Example: Correct captions
+A white parrot standing next to a jungle covered hillside.
+Closeup shot of a some type of beautifully white tropical bird
+A white bird is standing in front of plants.
+a white bird with a black beak and some trees and bushes
+A pure white parrot with red eyes and a black beak.
+Desired output: Wrong captions
+A colorful bird standing in front of plants.
+A white bird in a cage inside a house.
+A white ferret standing next to a jungle covered hillside.
+A pure white parrot with black eyes and a red beak.
+A white bird next to the sea.
+Example: Correct captions
+A small dog sitting at the front of a red motor boat.
+Two men and a dog on a red boat at a pier. 
+Twon men on a boat with a dog at the front.
+a red boat with a dog standing on the front end of the boat. 
+Two people on a small boat with a dog on the boat. 
+Desired output: Wrong captions
+Two men and a red dog on a boat at the pier. 
+Three men on a boat with a dog at the front.
+A red boat with two men and a dog standing at the back end of the boat.
+A small dog sitting at the front of a blue motor boat. 
+Two men and a dog on a red boat at the open sea.
+Explanation:
+We changed different atributes of objects in the picture. The changes are subtle.
+Please verify That you understood these examples.
+
+**** Model response: ***
+Yes, I understand the changes made in the captions and how they are different from the desired captions. The changes include altering the color of the object (from white to colorful, red to blue), changing the location (jungle to sea, pier to open sea), and rearranging the order of objects (dog at the front instead of back). These changes create wrong and inaccurate descriptions of the image.
+
+**** Model request: ***
+Following are 5 true sentences:
+These are the three types of pizza toppings available.
+an assortment of pizzas covered in meats and veggies
+Three photos of a variety of home made pizzas 
+Three separate pictures with different pizzas in them 
+There are many different types of pizza on the plates.
+Please create 5 similar yet wrong alternative captions. Please put each caption in a new line, without numbering the response.
+
+**** Model response: ***
+The three different types of pizza options that can be selected.
+An arrangement of pizzas loaded with various types of cheese and toppings.
+Three photographs of a range of handmade pizzas that differ in ingredients.
+Three distinct images that display an assortment of pizzas with different toppings.
+Several types of pizza can be seen on the plates in these pictures.
+
+**** Model request: ***
+Mission description: This is a new task. We are creating an image understanding test. 
+                    Given a few true image descriptions we want to generate wrong descriptions for a multiple-choice test. 
+                    The wrong captions need to not match the original image but to be close enough to be challenging and 
+                    test the reading comprehension.
+
+**** Model request: ***
+Example: Correct captions
+A white parrot standing next to a jungle covered hillside.
+Closeup shot of a some type of beautifully white tropical bird
+A white bird is standing in front of plants.
+a white bird with a black beak and some trees and bushes
+A pure white parrot with red eyes and a black beak.
+Desired output: Wrong captions
+A colorful bird standing in front of plants.
+A white bird in a cage inside a house.
+A white ferret standing next to a jungle covered hillside.
+A pure white parrot with black eyes and a red beak.
+A white bird next to the sea.
+Example: Correct captions
+A small dog sitting at the front of a red motor boat.
+Two men and a dog on a red boat at a pier. 
+Twon men on a boat with a dog at the front.
+a red boat with a dog standing on the front end of the boat. 
+Two people on a small boat with a dog on the boat. 
+Desired output: Wrong captions
+Two men and a red dog on a boat at the pier. 
+Three men on a boat with a dog at the front.
+A red boat with two men and a dog standing at the back end of the boat.
+A small dog sitting at the front of a blue motor boat. 
+Two men and a dog on a red boat at the open sea.
+Explanation:
+We changed different atributes of objects in the picture. The changes are subtle.
+Please verify That you understood these examples.
+
+**** Model response: ***
+Yes, I understand the examples. The captions with wrong descriptions may still describe elements in the photo, but they may not accurately represent the objects in the photo or may contain incorrect details. By changing various attributes of the objects, the wrong captions no longer match the original photo. This highlights the importance of accurately describing the visual elements in a photo when writing captions.
+
+**** Model request: ***
+Following are 5 true sentences:
+A crowd of people shopping at a farmers market filled with fruit and vegetables.
+People walking in a market with apples in crates.
+many fruits in baskets with buildings in the background
+A view of a farmers market being looked at by many people.
+People looking at crates of fruits and vegetables.  
+Please create 5 similar yet wrong alternative captions. Please put each caption in a new line, without numbering the response.
+
+**** Model response: ***
+A group of animals browsing through a zoo filled with exotic creatures.
+People marching through a parade with balloons and streamers.
+Numerous books stacked in shelves with a library as the backdrop.
+A glimpse of a lively carnival being enjoyed by a throng of visitors.
+Visitors admiring racks of designer clothes at a fashion show.
+
+**** Model request: ***
+Mission description: This is a new task. We are creating an image understanding test. 
+                    Given a few true image descriptions we want to generate wrong descriptions for a multiple-choice test. 
+                    The wrong captions need to not match the original image but to be close enough to be challenging and 
+                    test the reading comprehension.
+
+**** Model request: ***
+Example: Correct captions
+A white parrot standing next to a jungle covered hillside.
+Closeup shot of a some type of beautifully white tropical bird
+A white bird is standing in front of plants.
+a white bird with a black beak and some trees and bushes
+A pure white parrot with red eyes and a black beak.
+Desired output: Wrong captions
+A colorful bird standing in front of plants.
+A white bird in a cage inside a house.
+A white ferret standing next to a jungle covered hillside.
+A pure white parrot with black eyes and a red beak.
+A white bird next to the sea.
+Example: Correct captions
+A small dog sitting at the front of a red motor boat.
+Two men and a dog on a red boat at a pier. 
+Twon men on a boat with a dog at the front.
+a red boat with a dog standing on the front end of the boat. 
+Two people on a small boat with a dog on the boat. 
+Desired output: Wrong captions
+Two men and a red dog on a boat at the pier. 
+Three men on a boat with a dog at the front.
+A red boat with two men and a dog standing at the back end of the boat.
+A small dog sitting at the front of a blue motor boat. 
+Two men and a dog on a red boat at the open sea.
+Explanation:
+We changed different atributes of objects in the picture. The changes are subtle.
+Please verify That you understood these examples.
+
+**** Model response: ***
+Yes, I understand. The desired output captions reflect the specific details and arrangement of objects in the picture, while the wrong captions include incorrect colors, incorrect placement of objects, and different settings.
+
+**** Model request: ***
+Following are 5 true sentences:
+A very close shot of what seems to be three birds on a Giraffe. 
+A tall giraffe with birds perched on it's neck.
+A very up close shot of a giraffes neck.
+a giraffe neck with little brown birds climbing it.
+I don't know what  this image is that the birds are on.
+Please create 5 similar yet wrong alternative captions. Please put each caption in a new line, without numbering the response.
+
+**** Model response: ***
+A rare sighting of three miniature giraffes carrying tiny birds on their necks.
+A close-up of a giant tree with colorful plumage covering its bark.
+A bird sanctuary nestled within the long neck of a giraffe.
+A tree trunk disguised as a giraffe with birds playing hide and seek.
+A confused giraffe trying to balance three birds on its head.
+
+**** Model request: ***
+Mission description: This is a new task. We are creating an image understanding test. 
+                    Given a few true image descriptions we want to generate wrong descriptions for a multiple-choice test. 
+                    The wrong captions need to not match the original image but to be close enough to be challenging and 
+                    test the reading comprehension.
+
+**** Model request: ***
+Example: Correct captions
+A white parrot standing next to a jungle covered hillside.
+Closeup shot of a some type of beautifully white tropical bird
+A white bird is standing in front of plants.
+a white bird with a black beak and some trees and bushes
+A pure white parrot with red eyes and a black beak.
+Desired output: Wrong captions
+A colorful bird standing in front of plants.
+A white bird in a cage inside a house.
+A white ferret standing next to a jungle covered hillside.
+A pure white parrot with black eyes and a red beak.
+A white bird next to the sea.
+Example: Correct captions
+A small dog sitting at the front of a red motor boat.
+Two men and a dog on a red boat at a pier. 
+Twon men on a boat with a dog at the front.
+a red boat with a dog standing on the front end of the boat. 
+Two people on a small boat with a dog on the boat. 
+Desired output: Wrong captions
+Two men and a red dog on a boat at the pier. 
+Three men on a boat with a dog at the front.
+A red boat with two men and a dog standing at the back end of the boat.
+A small dog sitting at the front of a blue motor boat. 
+Two men and a dog on a red boat at the open sea.
+Explanation:
+We changed different atributes of objects in the picture. The changes are subtle.
+Please verify That you understood these examples.
+
+**** Model response: ***
+Yes, I understood the examples. The changes made in the captions were subtle but enough to convey a different visual image from the original picture.
+
+**** Model request: ***
+Following are 5 true sentences:
+Sheep are in a field near a fence and on a tractor.
+a large group of sheep eating from a manger
+The sheep are grazing in the barn where a trolley full of hay is brought. 
+A herd of sheep grazing from truck of hay.
+Many sheep gather on a truck and in a field eating hay.
+Please create 5 similar yet wrong alternative captions. Please put each caption in a new line, without numbering the response.
+
+**** Model response: ***
+Sheep are swimming in the ocean near a school of fish.
+A small group of sheep playing soccer in a field.
+The sheep are sunbathing on a beach while a plane flies overhead.
+A pack of wolves herding the sheep into a cave.
+Several sheep are flying through the sky with the help of magical umbrellas.
+
+**** Model request: ***
+Mission description: This is a new task. We are creating an image understanding test. 
+                    Given a few true image descriptions we want to generate wrong descriptions for a multiple-choice test. 
+                    The wrong captions need to not match the original image but to be close enough to be challenging and 
+                    test the reading comprehension.
+
+**** Model request: ***
+Example: Correct captions
+A white parrot standing next to a jungle covered hillside.
+Closeup shot of a some type of beautifully white tropical bird
+A white bird is standing in front of plants.
+a white bird with a black beak and some trees and bushes
+A pure white parrot with red eyes and a black beak.
+Desired output: Wrong captions
+A colorful bird standing in front of plants.
+A white bird in a cage inside a house.
+A white ferret standing next to a jungle covered hillside.
+A pure white parrot with black eyes and a red beak.
+A white bird next to the sea.
+Example: Correct captions
+A small dog sitting at the front of a red motor boat.
+Two men and a dog on a red boat at a pier. 
+Twon men on a boat with a dog at the front.
+a red boat with a dog standing on the front end of the boat. 
+Two people on a small boat with a dog on the boat. 
+Desired output: Wrong captions
+Two men and a red dog on a boat at the pier. 
+Three men on a boat with a dog at the front.
+A red boat with two men and a dog standing at the back end of the boat.
+A small dog sitting at the front of a blue motor boat. 
+Two men and a dog on a red boat at the open sea.
+Explanation:
+We changed different atributes of objects in the picture. The changes are subtle.
+Please verify That you understood these examples.
+
+**** Model response: ***
+Yes, I understand the examples. The changes made in the "wrong" captions include: changing the color of objects (bird, boat), changing the location of objects (jungle vs sea), adding or removing objects (ferret, cage), and rearranging the placement of objects (front vs back of the boat). These changes may seem small, but they can significantly alter the accuracy and description of the image.
+
+**** Model request: ***
+Following are 5 true sentences:
+The fresh fruit is left out on the counter. 
+A pear, orange and bananas are on display.
+A couple bananas and a apple with a orange.
+There is a bunch of fruits packed together
+A pear, orange and two bananas are clustered together.
+Please create 5 similar yet wrong alternative captions. Please put each caption in a new line, without numbering the response.
+
+**** Model response: ***
+The fruit bowl is full to the brim with apples, oranges, and pears.
+A colorful arrangement of fruits sits atop the kitchen counter.
+A solitary apple is found among the sea of bananas and oranges.
+A cluster of oranges and a few grapes decorate the fruit display.
+There are bits of fruit scattered all around the kitchen.
+Saved results to: ../my_results/Semantics.xlsx
