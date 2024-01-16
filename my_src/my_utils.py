@@ -10,6 +10,7 @@ from PIL import Image
 import matplotlib
 matplotlib.use('Qt5Agg')  # Backend image engine that works in pycharm
 import matplotlib.pyplot as plt
+from PIL import Image, ImageDraw, ImageFont
 
 def loadCaptions(file_path):
     # Open the file and load the JSON data
@@ -202,3 +203,75 @@ def cosineSimilarity(model, preprocess, captions, imagePath, imageName):
     simDict.update({'similarity': similarity.squeeze().tolist()})
 
     return simDict
+
+
+def saveImagesWithCaptions(my_images, results, imagePath, resultsPath, runName):
+    for i in range(len(my_images['imageIds'])):
+        imageId = my_images['imageIds'][i]
+        imageName = my_images['names'][i]
+
+        # Load existing image
+        image = Image.open(os.path.join(imagePath, imageName)).convert("RGB")
+        img_width, img_height = image.size
+
+        # Text to be added
+        choices = results.get(imageName).get('choices')
+        scores = results.get(imageName).get('similarity')
+        resLines = [" Score: " + "{:.3f}".format(round(scores[j], 3)) + ". " + choices[j] for j in range(len(choices))]
+
+        # Sort the texts in descending order, keeping track of indices (original true sentence was last)
+        sorted_indices = sorted(enumerate(scores), key=lambda x: x[1], reverse=True)
+        indices = [index for index, value in sorted_indices]
+        resLines = [resLines[ind] for ind in indices]
+
+        # Create new image with space for text
+        new_image = Image.new("RGB", (img_width + 300, img_height + 300), "white")
+        new_image.paste(image, (0, 0))
+
+        # Draw on the new image
+        draw = ImageDraw.Draw(new_image)
+        font = ImageFont.truetype("arial.ttf", 15)
+
+        # Text parameters
+        x = 10  # Horizontal coordinate to start
+        y = img_height + 10  # Vertical coordinate to start
+        line_height = 20  # Distance between lines of text
+
+        text = "Cosine similarity test:"
+        draw.text((x, y), text, fill='black', font=font)
+        y += line_height
+
+        # Add choices texts
+        for ind, text in enumerate(resLines):
+            # Highlight original true sentence
+            if indices[ind] == len(scores) - 1:
+                color = 'green'
+            else:
+                color = 'black'
+            draw.text((x, y), text, fill=color, font=font)
+            y += line_height
+
+        # Add original correct captions
+        y += line_height
+        text = "Original true captions:"
+        draw.text((x, y), text, fill='black', font=font)
+        y += line_height
+
+        origCaptions = my_images.get('captions').get(imageId)
+        for caption in origCaptions:
+            # Highlight original true sentence
+            draw.text((x, y), caption, fill='black', font=font)
+            y += line_height
+
+
+        # Verify results dir exists
+        resultsDir = os.path.join(resultsPath + runName + '/')
+        if not os.path.exists(resultsDir):
+            # Create the directory if it does not exist
+            os.makedirs(resultsDir)
+            print(f'Created directory: ' + resultsDir)
+
+        # Save the new image
+        newImagePath = os.path.join(resultsDir, imageName)
+        new_image.save(newImagePath)
+        print('Saved results to: ' + newImagePath)

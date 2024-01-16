@@ -9,20 +9,18 @@ import openai
 from PIL import Image
 from my_utils import *
 import matplotlib
-
-import base64
-import requests
-
 matplotlib.use('Qt5Agg')  # Backend image engine that works in pycharm
 import matplotlib.pyplot as plt
 import time
+import base64
+import requests
 
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
 dataSetPath = '../../Dataset/'
-captions_path = dataSetPath + 'annotations/captions_val2014.json'
-inputs_path = '../my_inputs/'
-results_path = '../my_results/'
+captionsPath = dataSetPath + 'annotations/captions_val2014.json'
+inputsPath = '../my_inputs/'
+resultsPath = '../my_results/'
 
 ## Load model
 model, _, preprocess = open_clip.create_model_and_transforms('convnext_base_w', pretrained='laion2b_s13b_b82k_augreg')
@@ -36,7 +34,7 @@ def sanity():
     print('\n** Running Sanity **\n\n')
 
     # Load captions
-    captions = loadCaptions(captions_path)
+    captions = loadCaptions(captionsPath)
 
     # Load images
     imagePath = dataSetPath + 'Sanity/'
@@ -86,7 +84,7 @@ def semantics():
     print('\n** Running Semantics **\n')
 
     # Load captions
-    captions = loadCaptions(captions_path)
+    captions = loadCaptions(captionsPath)
 
     # Load images
     imagePath = dataSetPath + 'Semantics/'
@@ -99,7 +97,7 @@ def semantics():
 
     # Load multiple choice file
     multChoiceFileName = 'semantics multiple choice.txt'
-    multChoices = loadTextFile(os.path.join(inputs_path, multChoiceFileName))
+    multChoices = loadTextFile(os.path.join(inputsPath, multChoiceFileName))
 
     results = dict()
     for i in range(numImages):
@@ -182,7 +180,7 @@ def inContextLearning(my_images):
         # Provide examples
         # Load examples file
         multChoiceFileName = 'In-context learning examples - Semantics 6.txt'
-        examples = loadTextFile(os.path.join(inputs_path, multChoiceFileName))
+        examples = loadTextFile(os.path.join(inputsPath, multChoiceFileName))
 
         myPrompt = '\n'.join(examples) + "\nPlease verify That you understood these examples."
         printModelIo(myPrompt, True)
@@ -233,10 +231,11 @@ def testModel(imagePath, my_images, modelCaptions):
     return results
 
 
-def main():
+
+def main(runName):
     print('Dataset path: ' + os.path.abspath(dataSetPath))
-    print('Captions path: ' + os.path.abspath(captions_path))
-    print('Inputs path: ' + os.path.abspath(inputs_path))
+    print('Captions path: ' + os.path.abspath(captionsPath))
+    print('Inputs path: ' + os.path.abspath(inputsPath))
 
     print("Model parameters:", f"{np.sum([int(np.prod(p.shape)) for p in model.parameters()]):,}")
     print("Context length:", context_length)
@@ -246,7 +245,7 @@ def main():
     # results = semantics()
 
     # Load captions
-    captions = loadCaptions(captions_path)
+    captions = loadCaptions(captionsPath)
 
     # Load images and find all captions per image
     imagePath = dataSetPath + 'Semantics6/'
@@ -257,9 +256,12 @@ def main():
 
     modelCaptions = inContextLearning(my_images)
 
+    print('Running Model...')
     results = testModel(imagePath, my_images, modelCaptions)
-    saveResultsToExcel(results, results_path, 'Semantics')
+    # saveResultsToExcel(results, resultsPath, 'Semantics')
+    saveImagesWithCaptions(my_images, results, imagePath, resultsPath, runName)
 
 
 if __name__ == '__main__':
-    main()
+    runName = 'Semantics6'
+    main(runName)
