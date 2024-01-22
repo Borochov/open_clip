@@ -258,10 +258,12 @@ def main(runName):
 
     print('Running Model...')
     results = testModel(imagePath, my_images, modelCaptions)
+
     # saveResultsToExcel(results, resultsPath, 'Semantics')
     saveImagesWithCaptions(my_images, results, imagePath, resultsPath, runName)
 
+    metrics = calcMetrics(my_images, results)
 
 if __name__ == '__main__':
-    runName = 'Semantics6'
+    runName = 'Semantics6_1'
     main(runName)

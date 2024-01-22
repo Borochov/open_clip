@@ -155,3 +155,5 @@ core.*
 
 # Images
 *.jpg
+*.xlsx
+my_results/Semantics.xlsx

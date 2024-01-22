@@ -219,7 +219,7 @@ def saveImagesWithCaptions(my_images, results, imagePath, resultsPath, runName):
         scores = results.get(imageName).get('similarity')
         resLines = [" Score: " + "{:.3f}".format(round(scores[j], 3)) + ". " + choices[j] for j in range(len(choices))]
 
-        # Sort the texts in descending order, keeping track of indices (original true sentence was last)
+        # Sort the texts in descending order of scores, keeping track of indices (original true sentence was last)
         sorted_indices = sorted(enumerate(scores), key=lambda x: x[1], reverse=True)
         indices = [index for index, value in sorted_indices]
         resLines = [resLines[ind] for ind in indices]
@@ -275,3 +275,39 @@ def saveImagesWithCaptions(my_images, results, imagePath, resultsPath, runName):
         newImagePath = os.path.join(resultsDir, imageName)
         new_image.save(newImagePath)
         print('Saved results to: ' + newImagePath)
+
+def calcMetrics(my_images, results):
+    # Metrics
+    right, wrong = 0, 0
+    ranks = []
+    for i in range(len(my_images['imageIds'])):
+        imageId = my_images['imageIds'][i]
+        imageName = my_images['names'][i]
+
+        scores = results.get(imageName).get('similarity')
+        # Sort the scores in descending order, keeping track of indices (original true sentence was last)
+        sorted_indices = sorted(enumerate(scores), key=lambda x: x[1], reverse=True)
+        indices = [index for index, value in sorted_indices]
+
+        rank = indices.index(len(scores) - 1)
+        ranks.append(rank+1)
+        if rank == 0:
+            right = right + 1
+        else:
+            wrong = wrong + 1
+
+    # Success rate
+    print("\n\nSummary")
+    print("-------")
+    print("Right choice: " + str(right))
+    print("Wrong choice: " + str(wrong))
+    print("Success rate: {:.2f}%".format(100 * right / (right + wrong)))
+
+    # Mean rank
+    meanRank = np.array(ranks).mean()
+    print("Mean rank: {:.2f}".format(meanRank))
+
+    metrics = dict()
+    metrics.update({'right': right, 'wrong': wrong, 'ranks': ranks})
+
+    return metrics
