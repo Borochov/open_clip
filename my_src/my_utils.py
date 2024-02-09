@@ -1,4 +1,5 @@
 import os
+import shutil
 import json
 import math
 import numpy as np
@@ -172,10 +173,14 @@ def getModelResponse(openai, request):
     return response.choices[0].text.strip()
 
 
-def printModelIo(text, isInput):
+def printModelIo(runParams, text, isInput):
     action = "request" if isInput else "response"
     print("**** Model " + action + ": ***")
     print(text + "\n")
+
+    with open(os.path.join(runParams.tempPath, runParams.promptFileTemp), 'a') as file:
+        file.write("**** Model " + action + ": ***\n")
+        file.write(text + "\n")
 
 
 def cosineSimilarity(model, preprocess, captions, imagePath, imageName):
@@ -205,13 +210,25 @@ def cosineSimilarity(model, preprocess, captions, imagePath, imageName):
     return simDict
 
 
-def saveImagesWithCaptions(my_images, results, imagePath, resultsPath, runName):
+# Copy chatGPT log to results dir
+def saveChatPrompt(runParams):
+    promptFileTemp = os.path.join(runParams.tempPath, runParams.promptFileTemp)
+    promptFile = os.path.join(runParams.resultsDir, 'chatGptPrompt.log')
+
+    try:
+        shutil.move(promptFileTemp, promptFile)
+    except IOError as e:
+        print(f"Unable to move file. {e}")
+
+
+def saveImagesWithCaptions(my_images, results, runParams):
+
     for i in range(len(my_images['imageIds'])):
         imageId = my_images['imageIds'][i]
         imageName = my_images['names'][i]
 
         # Load existing image
-        image = Image.open(os.path.join(imagePath, imageName)).convert("RGB")
+        image = Image.open(os.path.join(runParams.imagePath, imageName)).convert("RGB")
         img_width, img_height = image.size
 
         # Text to be added
@@ -264,19 +281,14 @@ def saveImagesWithCaptions(my_images, results, imagePath, resultsPath, runName):
             y += line_height
 
 
-        # Verify results dir exists
-        resultsDir = os.path.join(resultsPath + runName + '/')
-        if not os.path.exists(resultsDir):
-            # Create the directory if it does not exist
-            os.makedirs(resultsDir)
-            print(f'Created directory: ' + resultsDir)
-
         # Save the new image
-        newImagePath = os.path.join(resultsDir, imageName)
+        outcome = 'right/' if (indices[0] == len(scores) - 1) else 'wrong/'  # get right/wrong result
+        newImagePath = os.path.join(runParams.resultsDir + outcome, imageName)
         new_image.save(newImagePath)
         print('Saved results to: ' + newImagePath)
 
-def calcMetrics(my_images, results):
+
+def calcMetrics(runParams, my_images, results):
     # Metrics
     right, wrong = 0, 0
     ranks = []
@@ -297,15 +309,22 @@ def calcMetrics(my_images, results):
             wrong = wrong + 1
 
     # Success rate
-    print("\n\nSummary")
-    print("-------")
-    print("Right choice: " + str(right))
-    print("Wrong choice: " + str(wrong))
-    print("Success rate: {:.2f}%".format(100 * right / (right + wrong)))
-
+    successRate = 100 * right / (right + wrong)
     # Mean rank
     meanRank = np.array(ranks).mean()
-    print("Mean rank: {:.2f}".format(meanRank))
+
+    summaryText =f""" 
+    Summary
+    -------
+    Right choice: {right}
+    Wrong choice: {wrong}
+    Success rate: {successRate:.2f}%
+    Mean rank: {meanRank:.2f}
+    """
+    print(summaryText)
+
+    with open(os.path.join(runParams.resultsDir, 'summary.txt'), 'a') as file:
+        file.write(summaryText + "\n")
 
     metrics = dict()
     metrics.update({'right': right, 'wrong': wrong, 'ranks': ranks})

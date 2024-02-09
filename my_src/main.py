@@ -11,16 +11,14 @@ from my_utils import *
 import matplotlib
 matplotlib.use('Qt5Agg')  # Backend image engine that works in pycharm
 import matplotlib.pyplot as plt
+import datetime
 import time
 import base64
 import requests
+from globals import *
+from runParams import *
 
 openai.api_key = os.getenv('OPENAI_API_KEY')
-
-dataSetPath = '../../Dataset/'
-captionsPath = dataSetPath + 'annotations/captions_val2014.json'
-inputsPath = '../my_inputs/'
-resultsPath = '../my_results/'
 
 ## Load model
 model, _, preprocess = open_clip.create_model_and_transforms('convnext_base_w', pretrained='laion2b_s13b_b82k_augreg')
@@ -158,7 +156,7 @@ def uploadLocalImage():
     print(response.json())
 
 
-def inContextLearning(my_images):
+def inContextLearning(my_images, runParams):
     print('\n** Running In-Context Learning **\n')
 
     modelCaptions = {}
@@ -170,11 +168,11 @@ def inContextLearning(my_images):
                     The wrong captions need to not match the original image but to be close enough to be challenging and 
                     test the reading comprehension."""
 
-        printModelIo('Mission description: ' + myPrompt, True)
+        printModelIo(runParams, 'Mission description: ' + myPrompt, True)
 
         # Get response from the model
         response = getModelResponse(openai, myPrompt)
-        # printModelIo(response, False)
+        # printModelIo(runParams, response, False)
 
 
         # Provide examples
@@ -183,11 +181,11 @@ def inContextLearning(my_images):
         examples = loadTextFile(os.path.join(inputsPath, multChoiceFileName))
 
         myPrompt = '\n'.join(examples) + "\nPlease verify That you understood these examples."
-        printModelIo(myPrompt, True)
+        printModelIo(runParams, myPrompt, True)
 
         # Get response from the model
         response = getModelResponse(openai, myPrompt)
-        printModelIo(response, False)
+        printModelIo(runParams, response, False)
 
 
         # Create alternative captions
@@ -200,14 +198,16 @@ def inContextLearning(my_images):
         task = ("Please create 5 similar yet wrong alternative captions. "
                 "Please put each caption in a new line, without numbering the response.")
         myPrompt = Preface + "\n" + trueCaptions + task
-        printModelIo(myPrompt, True)
+        printModelIo(runParams, myPrompt, True)
 
         # Get response from the model
         response = getModelResponse(openai, myPrompt)
-        printModelIo(response, False)
+        printModelIo(runParams, response, False)
 
         # Keep results
         modelCaptions.update({imageId: response.split('\n')})
+
+
 
     return modelCaptions
 
@@ -232,10 +232,10 @@ def testModel(imagePath, my_images, modelCaptions):
 
 
 
-def main(runName):
-    print('Dataset path: ' + os.path.abspath(dataSetPath))
-    print('Captions path: ' + os.path.abspath(captionsPath))
-    print('Inputs path: ' + os.path.abspath(inputsPath))
+def main(runParams):
+    print('Dataset path: ' + os.path.abspath(runParams.dataSetPath))
+    print('Captions path: ' + os.path.abspath(runParams.captionsPath))
+    print('Inputs path: ' + os.path.abspath(runParams.inputsPath))
 
     print("Model parameters:", f"{np.sum([int(np.prod(p.shape)) for p in model.parameters()]):,}")
     print("Context length:", context_length)
@@ -245,25 +245,27 @@ def main(runName):
     # results = semantics()
 
     # Load captions
-    captions = loadCaptions(captionsPath)
+    captions = loadCaptions(runParams.captionsPath)
 
     # Load images and find all captions per image
-    imagePath = dataSetPath + 'Semantics6/'
-    my_images = findCaptionForImage(imagePath, captions)
+    my_images = findCaptionForImage(runParams.imagePath, captions)
 
     # Plot images and matching captions
     # plotImages(my_images, imagePath)
 
-    modelCaptions = inContextLearning(my_images)
+    modelCaptions = inContextLearning(my_images, runParams)
+    saveChatPrompt(runParams)
 
     print('Running Model...')
-    results = testModel(imagePath, my_images, modelCaptions)
+    results = testModel(runParams.imagePath, my_images, modelCaptions)
 
     # saveResultsToExcel(results, resultsPath, 'Semantics')
-    saveImagesWithCaptions(my_images, results, imagePath, resultsPath, runName)
+    saveImagesWithCaptions(my_images, results, runParams)
 
-    metrics = calcMetrics(my_images, results)
+    metrics = calcMetrics(runParams, my_images, results)
 
 if __name__ == '__main__':
-    runName = 'Semantics6_1'
-    main(runName)
+    runName = 'Semantics7_100'
+    runParams = RunParams(runName)
+
+    main(runParams)
