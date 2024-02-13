@@ -12,6 +12,8 @@ import matplotlib
 matplotlib.use('Qt5Agg')  # Backend image engine that works in pycharm
 import matplotlib.pyplot as plt
 from PIL import Image, ImageDraw, ImageFont
+import time
+
 
 def loadCaptions(file_path):
     # Open the file and load the JSON data
@@ -30,7 +32,7 @@ def loadCaptions(file_path):
 
 
 
-def findCaptionForImage(imagePath, captions):
+def findCaptionForImage(runParams, captions):
 
     my_images = {
         'names': [],
@@ -38,10 +40,11 @@ def findCaptionForImage(imagePath, captions):
         'imageIds': []
     }
 
-    imageFileNames = [filename for filename in os.listdir(imagePath) if
+    imageFileNames = [filename for filename in os.listdir(runParams.imagePath) if
                      filename.endswith(".png") or filename.endswith(".jpg")]
 
-    for imageName in imageFileNames:
+    for imageIdx in range(runParams.numImages):
+        imageName = imageFileNames[imageIdx]
         # Find the matching caption
         image_id = None
         for img in captions['images']:
@@ -183,17 +186,27 @@ def printModelIo(runParams, text, isInput):
         file.write(text + "\n")
 
 
-def cosineSimilarity(model, preprocess, captions, imagePath, imageName):
+def cosineSimilarity(model, preprocess, captions, runParams, imageName):
 
     text_tokens = tokenizer.tokenize(["This is " + desc for desc in captions])
-    image = Image.open(os.path.join(imagePath, imageName)).convert("RGB")
+    image = Image.open(os.path.join(runParams.imagePath, imageName)).convert("RGB")
     image_input = torch.tensor(np.stack([preprocess(image)]))
 
     with torch.no_grad():
         # image_features = model.encodeImageBase64(image_input).float()
         # image_features = base64.b64encode(image_input)
-        image_features = model.encode_image(image_input).float()
+
+        # image_features = model.encode_image(image_input).float()
+
+        # image_features = measureRunTime("encode_image", model.encode_image, *image_input, )
+
+        tensorFileName = ('tensor_' + imageName).replace('.jpg', '.pt')
+        image_features = torch.load(os.path.join(runParams.encodedPath, tensorFileName))
+        image_features = image_features.float()
+
         text_features = model.encode_text(text_tokens).float()
+        # text_features = measureRunTime("encode_text", model.encode_text, *text_tokens)
+        # text_features = text_features.float()
 
     ## Calculate cosine similarity
     image_features /= image_features.norm(dim=-1, keepdim=True)
@@ -330,3 +343,18 @@ def calcMetrics(runParams, my_images, results):
     metrics.update({'right': right, 'wrong': wrong, 'ranks': ranks})
 
     return metrics
+
+
+def measureRunTime(funcName, func, *args, **kwargs):
+    start_time = time.time()
+
+    if funcName == "encode_image":
+        result = func(torch.unsqueeze(*args, 0))
+    else:
+        result = func(*args)
+
+    end_time = time.time()
+    duration = end_time - start_time
+
+    print(f"Execution time for {funcName}: {duration / 60 :.2f} minutes")
+    return result

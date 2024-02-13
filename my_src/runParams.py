@@ -4,7 +4,7 @@ import os
 
 class RunParams:
 
-    def __init__(self, runName):
+    def __init__(self, runName, numImages):
 
         self.dataSetPath = dataSetPath
         self.captionsPath = captionsPath
@@ -12,6 +12,8 @@ class RunParams:
         self.inputsPath = inputsPath
         self.tempPath = tempPath
         self.resultsPath = resultsPath
+        self.encodedPath = encodedPath
+        self.numImages = numImages
 
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         self.runName = runName + '_' + timestamp
@@ -35,7 +37,7 @@ class RunParams:
 
     def __str__(self):
         return f"""
-        *** self.runName ***
+        *** {self.runName} ***
         --------------------\n
         dataSet path: {dataSetPath}
         captions path = {captionsPath}

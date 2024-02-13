@@ -160,7 +160,8 @@ def inContextLearning(my_images, runParams):
     print('\n** Running In-Context Learning **\n')
 
     modelCaptions = {}
-    for imageIdx in range(len(my_images['imageIds'])):
+
+    for imageIdx in range(runParams.numImages):
 
         # Describe mission
         myPrompt = """This is a new task. We are creating an image understanding test. 
@@ -191,7 +192,8 @@ def inContextLearning(my_images, runParams):
         # Create alternative captions
         imageId = my_images['imageIds'][imageIdx]
         trueCaptions = ""
-        for j in range(len(my_images['captions'][imageId])):
+        N = min(len(my_images['captions'][imageId]), 100)  # Num of images to run on
+        for j in range(N):
             trueCaptions += my_images['captions'][imageId][j] + "\n"
 
         Preface = "Following are 5 true sentences:"
@@ -212,7 +214,7 @@ def inContextLearning(my_images, runParams):
     return modelCaptions
 
 ## Test model using multiple choices
-def testModel(imagePath, my_images, modelCaptions):
+def testModel(runParams, my_images, modelCaptions):
     # Create multiple choices text
     results = dict()
     for i in range(len(my_images['imageIds'])):
@@ -225,7 +227,7 @@ def testModel(imagePath, my_images, modelCaptions):
         choices.append(my_images['captions'][imageId][0])  # Correct sentence is last
 
         # Run cosine similarity test
-        tempDict = cosineSimilarity(model, preprocess, choices, imagePath, imageName)
+        tempDict = cosineSimilarity(model, preprocess, choices, runParams, imageName)
         results.update({imageName: tempDict})
 
     return results
@@ -248,16 +250,16 @@ def main(runParams):
     captions = loadCaptions(runParams.captionsPath)
 
     # Load images and find all captions per image
-    my_images = findCaptionForImage(runParams.imagePath, captions)
+    my_images = findCaptionForImage(runParams, captions)
 
     # Plot images and matching captions
     # plotImages(my_images, imagePath)
-
+ 
     modelCaptions = inContextLearning(my_images, runParams)
     saveChatPrompt(runParams)
 
     print('Running Model...')
-    results = testModel(runParams.imagePath, my_images, modelCaptions)
+    results = testModel(runParams, my_images, modelCaptions)
 
     # saveResultsToExcel(results, resultsPath, 'Semantics')
     saveImagesWithCaptions(my_images, results, runParams)
@@ -265,7 +267,10 @@ def main(runParams):
     metrics = calcMetrics(runParams, my_images, results)
 
 if __name__ == '__main__':
-    runName = 'Semantics7_100'
-    runParams = RunParams(runName)
+    runName = 'val2014_test'
+    numImages = 100
+    runParams = RunParams(runName, numImages)
+
+    print(str(runParams))
 
     main(runParams)
