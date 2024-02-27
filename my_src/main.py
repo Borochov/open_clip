@@ -160,58 +160,42 @@ def inContextLearning(my_images, runParams):
     print('\n** Running In-Context Learning **\n')
 
     modelCaptions = {}
-
     for imageIdx in range(runParams.numImages):
 
         # Describe mission
-        myPrompt = """This is a new task. We are creating an image understanding test. 
-                    Given a few true image descriptions we want to generate wrong descriptions for a multiple-choice test. 
-                    The wrong captions need to not match the original image but to be close enough to be challenging and 
-                    test the reading comprehension."""
-
-        printModelIo(runParams, 'Mission description: ' + myPrompt, True)
-
-        # Get response from the model
-        response = getModelResponse(openai, myPrompt)
-        # printModelIo(runParams, response, False)
-
+        mission = loadTextFile(runParams.missionPath)
+        myPrompt = '\n'.join(mission) + '\n'
 
         # Provide examples
-        # Load examples file
-        multChoiceFileName = 'In-context learning examples - Semantics 6.txt'
-        examples = loadTextFile(os.path.join(inputsPath, multChoiceFileName))
-
-        myPrompt = '\n'.join(examples) + "\nPlease verify That you understood these examples."
-        printModelIo(runParams, myPrompt, True)
-
-        # Get response from the model
-        response = getModelResponse(openai, myPrompt)
-        printModelIo(runParams, response, False)
-
+        examples = loadTextFile(runParams.examplesPath)
+        myPrompt += '\n'.join(examples) + '\n'
 
         # Create alternative captions
         imageId = my_images['imageIds'][imageIdx]
+
+        # Collect all true captions of for the image
+        Preface = "Following are 5 true sentences:"
         trueCaptions = ""
-        N = min(len(my_images['captions'][imageId]), 100)  # Num of images to run on
-        for j in range(N):
+        for j in range(len(my_images['captions'][imageId])):
             trueCaptions += my_images['captions'][imageId][j] + "\n"
 
-        Preface = "Following are 5 true sentences:"
-        task = ("Please create 5 similar yet wrong alternative captions. "
-                "Please put each caption in a new line, without numbering the response.")
-        myPrompt = Preface + "\n" + trueCaptions + task
+        myPrompt += Preface + "\n" + trueCaptions + '\n'
+
+        # Give task
+        task = loadTextFile(runParams.taskPath)
+        myPrompt += '\n'.join(task)
+
         printModelIo(runParams, myPrompt, True)
 
         # Get response from the model
-        response = getModelResponse(openai, myPrompt)
+        response = getModelResponse(openai, myPrompt, runParams.gptModel)
         printModelIo(runParams, response, False)
 
         # Keep results
         modelCaptions.update({imageId: response.split('\n')})
 
-
-
     return modelCaptions
+
 
 ## Test model using multiple choices
 def testModel(runParams, my_images, modelCaptions):
@@ -233,7 +217,6 @@ def testModel(runParams, my_images, modelCaptions):
     return results
 
 
-
 def main(runParams):
     print('Dataset path: ' + os.path.abspath(runParams.dataSetPath))
     print('Captions path: ' + os.path.abspath(runParams.captionsPath))
@@ -243,8 +226,9 @@ def main(runParams):
     print("Context length:", context_length)
     print("Vocab size:", vocab_size)
 
-    # sanity()
-    # results = semantics()
+    # Save inputs and run parameters
+    saveInputs(runParams)
+    runParams.save()
 
     # Load captions
     captions = loadCaptions(runParams.captionsPath)
@@ -254,20 +238,19 @@ def main(runParams):
 
     # Plot images and matching captions
     # plotImages(my_images, imagePath)
- 
+
     modelCaptions = inContextLearning(my_images, runParams)
     saveChatPrompt(runParams)
 
     print('Running Model...')
     results = testModel(runParams, my_images, modelCaptions)
 
-    # saveResultsToExcel(results, resultsPath, 'Semantics')
     saveImagesWithCaptions(my_images, results, runParams)
 
     metrics = calcMetrics(runParams, my_images, results)
 
 if __name__ == '__main__':
-    runName = 'val2014_test'
+    runName = 'semantics9_1'
     numImages = 100
     runParams = RunParams(runName, numImages)
 

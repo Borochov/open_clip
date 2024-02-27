@@ -14,6 +14,12 @@ import matplotlib.pyplot as plt
 from PIL import Image, ImageDraw, ImageFont
 import time
 
+import asyncio
+import aiohttp
+import ssl
+import certifi
+
+
 
 def loadCaptions(file_path):
     # Open the file and load the JSON data
@@ -40,8 +46,8 @@ def findCaptionForImage(runParams, captions):
         'imageIds': []
     }
 
-    imageFileNames = [filename for filename in os.listdir(runParams.imagePath) if
-                     filename.endswith(".png") or filename.endswith(".jpg")]
+    imageFileNames = [fileName for fileName in os.listdir(runParams.imagePath) if
+                      fileName.endswith(".png") or fileName.endswith(".jpg")]
 
     for imageIdx in range(runParams.numImages):
         imageName = imageFileNames[imageIdx]
@@ -163,14 +169,12 @@ def encodeImageBase64(image_path):
         return base64.b64encode(image_file.read()).decode('utf-8')
 
 
-def getModelResponse(openai, request):
+def getModelResponse(openai, request, gptModel):
     # Generate a response from the model
     response = openai.Completion.create(
-        # engine="text-davinci-003",  # Replace with the appropriate model/engine for GPT-4 or the version you are using
-        model="gpt-3.5-turbo-instruct",
-        # model="gpt-4-vision-preview",
+        model=gptModel,
         prompt=request,
-        max_tokens=100,  # Adjust based on how long you expect the response to be
+        max_tokens=100,  # Response length
     )
     # Extract the text from the response
     return response.choices[0].text.strip()
@@ -178,11 +182,11 @@ def getModelResponse(openai, request):
 
 def printModelIo(runParams, text, isInput):
     action = "request" if isInput else "response"
-    print("**** Model " + action + ": ***")
+    print("\n**** Model " + action + ": ***")
     print(text + "\n")
 
     with open(os.path.join(runParams.tempPath, runParams.promptFileTemp), 'a') as file:
-        file.write("**** Model " + action + ": ***\n")
+        file.write("\n**** Model " + action + ": ***\n")
         file.write(text + "\n")
 
 
@@ -223,7 +227,7 @@ def cosineSimilarity(model, preprocess, captions, runParams, imageName):
     return simDict
 
 
-# Copy chatGPT log to results dir
+# Move chatGPT log to results dir
 def saveChatPrompt(runParams):
     promptFileTemp = os.path.join(runParams.tempPath, runParams.promptFileTemp)
     promptFile = os.path.join(runParams.resultsDir, 'chatGptPrompt.log')
@@ -325,14 +329,18 @@ def calcMetrics(runParams, my_images, results):
     successRate = 100 * right / (right + wrong)
     # Mean rank
     meanRank = np.array(ranks).mean()
+    # Run duration
+    duration = time.time() - runParams.start_time
 
     summaryText =f""" 
-    Summary
-    -------
+    Summary for {runParams.runName}
+    ----------------------------------
     Right choice: {right}
     Wrong choice: {wrong}
     Success rate: {successRate:.2f}%
     Mean rank: {meanRank:.2f}
+    
+    Execution time: {duration / 60 :.2f} minutes
     """
     print(summaryText)
 
@@ -345,6 +353,15 @@ def calcMetrics(runParams, my_images, results):
     return metrics
 
 
+def saveInputs(runParams):
+    try:
+        shutil.copy(runParams.missionPath, os.path.join(runParams.resultsDir, 'mission.txt'))
+        shutil.copy(runParams.examplesPath, os.path.join(runParams.resultsDir, 'examples.txt'))
+        shutil.copy(runParams.taskPath, os.path.join(runParams.resultsDir, 'task.txt'))
+    except IOError as e:
+        print(f"Unable to move file. {e}")
+
+
 def measureRunTime(funcName, func, *args, **kwargs):
     start_time = time.time()
 
@@ -353,8 +370,37 @@ def measureRunTime(funcName, func, *args, **kwargs):
     else:
         result = func(*args)
 
-    end_time = time.time()
-    duration = end_time - start_time
+    duration = time.time() - start_time
 
     print(f"Execution time for {funcName}: {duration / 60 :.2f} minutes")
     return result
+
+
+# Call ChatGPT with the given prompt, asynchronously.
+async def call_chatgpt_async(session, prompt, gptModel):
+    payload = {
+        'model': gptModel,
+        'messages': [
+            {"role": "user", "content": prompt}
+        ]
+    }
+    try:
+        async with session.post(
+            url='https://api.openai.com/v1/chat/completions',
+            headers={"Content-Type": "application/json", "Authorization": f"Bearer {OPENAI_SECRET_KEY}"},
+            json=payload,
+            ssl=ssl.create_default_context(cafile=certifi.where())
+        ) as response:
+            response = await response.json()
+        if "error" in response:
+            print(f"OpenAI request failed with error {response['error']}")
+        return response['choices'][0]['message']['content']
+    except:
+        print("Request failed.")
+
+
+# Call chatGPT for all the given prompts in parallel.
+async def call_chatgpt_bulk(prompts, gptModel):
+    async with aiohttp.ClientSession() as session, asyncio.TaskGroup() as tg:
+        responses = [tg.create_task(call_chatgpt_async(session, prompt, gptModel)) for prompt in prompts]
+    return responses

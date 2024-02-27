@@ -3,6 +3,7 @@ wandb/
 models/
 features/
 results/
+my_inputs/*
 my_results/*
 
 tests/data/

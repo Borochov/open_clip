@@ -1,6 +1,9 @@
 from globals import *
 import datetime
+import time
 import os
+import shutil
+
 
 class RunParams:
 
@@ -10,14 +13,20 @@ class RunParams:
         self.captionsPath = captionsPath
         self.imagePath = imagePath
         self.inputsPath = inputsPath
+        self.missionPath = os.path.join(inputsPath, missionFileName)
+        self.examplesPath = os.path.join(inputsPath, examplesFileName)
+        self.taskPath = os.path.join(inputsPath, taskFileName)
         self.tempPath = tempPath
         self.resultsPath = resultsPath
         self.encodedPath = encodedPath
         self.numImages = numImages
+        self.start_time = time.time()
 
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         self.runName = runName + '_' + timestamp
         self.promptFileTemp = runName + '_prompt.log'
+
+        self.gptModel = GPT_MODEL
 
         # Create run directories
         if not os.path.exists(tempPath):
@@ -39,9 +48,23 @@ class RunParams:
         return f"""
         *** {self.runName} ***
         --------------------\n
-        dataSet path: {dataSetPath}
-        captions path = {captionsPath}
-        image path = {imagePath}
-        inputs path = {inputsPath}
-        results path = {resultsPath}
+        start time: {datetime.datetime.fromtimestamp(self.start_time).strftime("%d/%m/%Y %H:%M:%S")}
+        number of images: {self.numImages}
+        GPT model: {self.gptModel}
+        dataSet path: {self.dataSetPath}
+        captions path: {self.captionsPath}
+        image path: {self.imagePath}
+        encoded images path: {self.encodedPath}
+        inputs path: {self.inputsPath}
+        mission file: {self.missionPath}
+        examples file: {self.examplesPath}
+        task file: {self.taskPath}
+        results dir: {self.resultsDir}
         """
+
+    def save(self):
+        try:
+            with open(os.path.join(self.resultsDir, 'runParams.txt'), 'a') as file:
+                file.write(str(self) + "\n")
+        except IOError as e:
+            print(f"Unable to write to file: {e}")
