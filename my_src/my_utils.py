@@ -169,12 +169,12 @@ def encodeImageBase64(image_path):
         return base64.b64encode(image_file.read()).decode('utf-8')
 
 
-def getModelResponse(openai, request, gptModel):
+def getModelResponse(openai, request, gptModel, maxLength=100):
     # Generate a response from the model
     response = openai.Completion.create(
         model=gptModel,
         prompt=request,
-        max_tokens=100,  # Response length
+        max_tokens=maxLength,  # Response length
     )
     # Extract the text from the response
     return response.choices[0].text.strip()
@@ -250,8 +250,11 @@ def saveImagesWithCaptions(my_images, results, runParams):
 
         # Text to be added
         choices = results.get(imageName).get('choices')
+        explanations = results.get(imageName).get('explanations')
+        explanations.append('Original true caption')
         scores = results.get(imageName).get('similarity')
-        resLines = [" Score: " + "{:.3f}".format(round(scores[j], 3)) + ". " + choices[j] for j in range(len(choices))]
+
+        resLines = [" Score: " + "{:.3f}".format(round(scores[j], 3)) + ". " + choices[j] + ' [' + explanations[j] + ']' for j in range(len(choices))]
 
         # Sort the texts in descending order of scores, keeping track of indices (original true sentence was last)
         sorted_indices = sorted(enumerate(scores), key=lambda x: x[1], reverse=True)

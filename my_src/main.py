@@ -15,6 +15,7 @@ import datetime
 import time
 import base64
 import requests
+import regex
 from globals import *
 from runParams import *
 
@@ -188,11 +189,28 @@ def inContextLearning(my_images, runParams):
         printModelIo(runParams, myPrompt, True)
 
         # Get response from the model
-        response = getModelResponse(openai, myPrompt, runParams.gptModel)
+        response = getModelResponse(openai, myPrompt, runParams.gptModel, 120)
         printModelIo(runParams, response, False)
 
+        # # Task validation
+        # taskValid = loadTextFile(os.path.join(inputsPath, 'task validation.txt'))
+        # myPrompt = '\n'.join(taskValid)
+        #
+        # printModelIo(runParams, myPrompt, True)
+
+        # Get response from the model
+        # response = getModelResponse(openai, myPrompt, runParams.gptModel)
+        # printModelIo(runParams, response, False)
+
         # Keep results
-        modelCaptions.update({imageId: response.split('\n')})
+        captions, explanations = [], []
+        for text in response.split('\n'):
+            captions.append(text.split('[')[0].strip())
+            if not (text.find('[') == -1):
+                explanations.append(text.split('[')[1].split(']')[0].strip())
+            else:
+                explanations.append(' ')
+        modelCaptions.update({imageId: {'captions': captions, 'explanations': explanations}})
 
     return modelCaptions
 
@@ -207,11 +225,12 @@ def testModel(runParams, my_images, modelCaptions):
             continue
 
         imageName = my_images['names'][i]
-        choices = modelCaptions[imageId]
+        choices = modelCaptions[imageId]['captions']
         choices.append(my_images['captions'][imageId][0])  # Correct sentence is last
 
         # Run cosine similarity test
         tempDict = cosineSimilarity(model, preprocess, choices, runParams, imageName)
+        tempDict.update({'explanations': modelCaptions[imageId]['explanations']})  # add the explanations
         results.update({imageName: tempDict})
 
     return results
@@ -250,7 +269,7 @@ def main(runParams):
     metrics = calcMetrics(runParams, my_images, results)
 
 if __name__ == '__main__':
-    runName = 'semantics9_1'
+    runName = 'semantics9_5'
     numImages = 100
     runParams = RunParams(runName, numImages)
 
